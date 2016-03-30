@@ -16,10 +16,10 @@ import com.googlecode.objectify.cmd.Query;
 @Entity
 public class User {
 	/*
-	 * Adapter for com.google.appending.api.users.User to add our functionality
+	 * Adapter for com.google.appending.api.users.UserServlet to add our functionality
 	 */
-	@Id private String id;	//Objectify id uses user id from com.google.appengine.api.users.User
-	//following fields can be gotten from com.google.appengine.api.users.User
+	@Id private String id;	//Objectify id uses user id from com.google.appengine.api.users.UserServlet
+	//following fields can be gotten from com.google.appengine.api.users.UserServlet
     @Index private String name;
     private String email;
     private String federatedId;
@@ -34,7 +34,7 @@ public class User {
     /**
      * Creates and saves user
      * @param user
-     * @return the newly instantiated and stored User
+     * @return the newly instantiated and stored UserServlet
      */
     public static User createUser(com.google.appengine.api.users.User user) {
         User made = new User();
@@ -97,7 +97,7 @@ public class User {
 	}
 	
 	/**
-	 * Returns User id which is same as com.google.appengine.api.users.User.getUserId()
+	 * Returns UserServlet id which is same as com.google.appengine.api.users.UserServlet.getUserId()
 	 * @return
 	 */
 	public String getId(){
@@ -107,7 +107,7 @@ public class User {
 	/**
 	 * Finds a user in datastore 
 	 * @param user
-	 * @return User
+	 * @return UserServlet
 	 */
 	public static User findUser(com.google.appengine.api.users.User user){
 		String toFind = user.getUserId();

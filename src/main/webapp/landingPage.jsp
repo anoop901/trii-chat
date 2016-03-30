@@ -5,7 +5,7 @@
 <%@ page import="triichat.OfyService" %>
 <%--
   Created by IntelliJ IDEA.
-  User: anoop
+  UserServlet: anoop
   Date: 2/9/16
   Time: 19:21
   To change this template use File | Settings | File Templates.
@@ -37,6 +37,7 @@
 <h2>Groups</h2>
 <ul id="group-list">
 </ul>
+<p id="group-list-error"></p>
 </div>
 
 <div id="trii-list-section">
@@ -55,25 +56,34 @@
 $(document).ready(function () {
 	
 	// request the list of groups from the server
-	$.getJSON("/group_list", function (data) {
+	$.getJSON('/me', function (me) {
 		
 		// populate the group list <ul> element
 		var groupListElem = $('#group-list');
-		$('#group-list').empty();
-		for (var i = 0; i < data.groups.length; i++) {
+		groupListElem.empty();
+        $('group-list-error').empty();
+		for (var i = 0; i < me.groups.length; i++) {
 			
-			var group = data.groups[i]
-			
-			var liElem = $('<li>');
-			liElem.text(group.name);
-			liElem.data('group-id', group.id); // associate the group id with the element
-			
-			// when the <li> element is clicked...
-			liElem.click(function (e) {
-				alert('group-id = ' + $(e.target).data('group-id'));
-			});
-			groupListElem.append(liElem);
+			var groupID = me.groups[i];
+
+			$.getJSON('/group', {id: groupID}, (function (groupID, group) {
+                var liElem = $('<li>');
+                liElem.text(group.name);
+                liElem.data('group-id', groupID); // associate the group id with the element
+
+                // when the <li> element is clicked...
+                liElem.click(function (e) {
+                    alert('group-id = ' + $(e.target).data('group-id'));
+                });
+                groupListElem.append(liElem);
+            }).bind(undefined, groupID));
 		}
+	}).fail(function () {
+		var groupListElem = $('#group-list');
+		groupListElem.empty();
+
+		var groupListErrorElem = $('#group-list-error');
+		groupListErrorElem.text('[failed to get group list]');
 	});
 });
 </script>

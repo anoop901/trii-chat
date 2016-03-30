@@ -10,11 +10,7 @@ import java.io.IOException;
  * Created by anoop on 3/30/16.
  */
 public class TriiServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        // TODO: implement this
     }
 }
