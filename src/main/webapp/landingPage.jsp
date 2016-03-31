@@ -33,22 +33,21 @@
 %>
 
 <div id="group-list-section">
-<h2>Groups</h2>
-<ul id="group-list">
-</ul>
-<p id="group-list-error"></p>
+    <h2>Groups</h2>
+    <ul id="group-list"></ul>
+    <p id="group-list-error"></p>
 </div>
 
 <div id="trii-list-section">
-<h2>Triis</h2>
-<ul id="trii-list">
-</ul>
+    <h2>Triis</h2>
+    <ul id="trii-list"></ul>
+    <p id="trii-list-error"></p>
 </div>
 
 <div id="trii-view">
-<h2>Trii</h2>
-<table id="message-table">
-</table>
+    <h2>Trii</h2>
+    <table id="message-table"></table>
+    <p id="trii-error"></p>
 </div>
 
 <script>
@@ -58,6 +57,8 @@ $(document).ready(function () {
     var groupListElem = $('#group-list');
     var groupListErrorElem = $('#group-list-error');
     var triiListElem = $('#trii-list');
+    var triiListErrorElem = $('#trii-list-error');
+    var messageTableElem = $('#message-table');
 	
 	// request the list of groups from the server
 	$.getJSON('/me', function (me) {
@@ -101,11 +102,14 @@ $(document).ready(function () {
         $.getJSON('/group', {id: groupID}, function (group) {
 
             triiListElem.empty();
+            triiListErrorElem.empty();
 
+            // iterate through list of triis
             var triis = group['triis'];
             for (var i = 0; i < triis.length; i++) {
                 var triiID = triis[i];
 
+                // get this trii's name
                 $.getJSON('/trii', {id: triiID}, (function (triiID, trii) {
                     var liElem = $('<li>');
                     liElem.text(trii['name']);
@@ -113,12 +117,49 @@ $(document).ready(function () {
 
                     // when the <li> element is clicked...
                     liElem.click(function (e) {
-                        alert('trii-id = ' + triiID);
+                        clickedTrii(triiID);
                     });
 
                     triiListElem.append(liElem);
                 }).bind(undefined, triiID));
             }
+        }).fail(function () {
+            // display an error message
+            triiListElem.empty();
+            triiListErrorElem.text('[failed to get trii list]');
+        });
+    }
+
+    function clickedTrii(triiID) {
+        // get trii info
+        $.getJSON('/trii', {id: triiID}, function (trii) {
+
+            messageTableElem.empty();
+
+            // iterate through list of messages
+            var messages = trii['messages'];
+            for (var i = 0; i < messages.length; i++) {
+                var messageID = messages[i];
+
+                // get this messages's author and body
+                $.getJSON('/message', {id: messageID}, (function (messageID, message) {
+
+                    var trElem = $('<tr>');
+                    var td1Elem = $('<td>');
+                    var td2Elem = $('<td>');
+
+                    td1Elem.text(message['author']);
+                    td2Elem.text(message['body']);
+                    trElem.append(td1Elem, td2Elem);
+
+                    messageTableElem.append(trElem);
+
+                }).bind(undefined, messageID));
+            }
+        }).fail(function () {
+            // display an error message
+            triiListElem.empty();
+            triiListErrorElem.text('[failed to get trii]');
         });
     }
 });

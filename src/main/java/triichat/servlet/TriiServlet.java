@@ -28,7 +28,7 @@ public class TriiServlet extends HttpServlet {
 
         try {
             trii.put("name", "Trii" + triiID);
-            trii.put("triis", messages);
+            trii.put("messages", messages);
         } catch (JSONException e) {
             e.printStackTrace();
         }
