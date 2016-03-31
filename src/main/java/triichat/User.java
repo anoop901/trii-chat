@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.googlecode.objectify.Ref;
+import com.googlecode.objectify.Result;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -111,11 +112,11 @@ public class User {
 	 */
 	public static User findUser(com.google.appengine.api.users.User user){
 		String toFind = user.getUserId();
-		Ref<User> found = OfyService.ofy().load().type(User.class).id(toFind);
+		Result<User> found = OfyService.ofy().load().type(User.class).id(toFind);
 		if(found == null){ 
 			return null;
 		}else{
-			return found.get();
+			return found.now();
 		}
 	}
 	

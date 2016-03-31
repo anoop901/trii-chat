@@ -3,9 +3,7 @@ package triichat;
 import java.util.List;
 
 import com.google.appengine.api.datastore.Entity;
-import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.ObjectifyFactory;
-import com.googlecode.objectify.Objectify;
+import com.googlecode.objectify.*;
 import com.googlecode.objectify.cmd.Loader;
 
 /* Usage
@@ -87,6 +85,10 @@ public class OfyService {
      */
     public List<Object> loadWithFilter(Class<Object> type, String condition, Object value){
     	return OfyService.load().type(type).filter(condition, value).list();
+    }
+
+    public Message getMessage(Long id){
+        return ofy().load().type(Message.class).id(id).now();
     }
     
 }
