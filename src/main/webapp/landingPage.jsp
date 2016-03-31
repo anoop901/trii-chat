@@ -30,7 +30,6 @@
 <%
     	triichat.User triiUser = triichat.User.findUser(user);
     	if(triiUser != null){
-    		//go to user page
 %>
 
 <div id="group-list-section">
@@ -54,37 +53,74 @@
 
 <script>
 $(document).ready(function () {
+
+    // references to some elements
+    var groupListElem = $('#group-list');
+    var groupListErrorElem = $('#group-list-error');
+    var triiListElem = $('#trii-list');
 	
 	// request the list of groups from the server
 	$.getJSON('/me', function (me) {
 		
 		// populate the group list <ul> element
-		var groupListElem = $('#group-list');
 		groupListElem.empty();
-        $('group-list-error').empty();
-		for (var i = 0; i < me.groups.length; i++) {
-			
-			var groupID = me.groups[i];
+        groupListErrorElem.empty();
 
+        // iterate through list of groupIDs
+        var groups = me['groups'];
+		for (var i = 0; i < groups.length; i++) {
+			
+			var groupID = groups[i];
+
+            // request this group's name
 			$.getJSON('/group', {id: groupID}, (function (groupID, group) {
+
+                // create the <li> element containing this group's name
                 var liElem = $('<li>');
-                liElem.text(group.name);
+                liElem.text(group['name']);
                 liElem.data('group-id', groupID); // associate the group id with the element
 
                 // when the <li> element is clicked...
                 liElem.click(function (e) {
-                    alert('group-id = ' + $(e.target).data('group-id'));
+                    clickedGroup(groupID);
                 });
+
                 groupListElem.append(liElem);
-            }).bind(undefined, groupID));
+            }).bind(undefined, groupID)).fail(function () {
+                // TODO: display an error message
+            });
 		}
 	}).fail(function () {
-		var groupListElem = $('#group-list');
+        // display an error message
 		groupListElem.empty();
-
-		var groupListErrorElem = $('#group-list-error');
 		groupListErrorElem.text('[failed to get group list]');
 	});
+
+    function clickedGroup(groupID) {
+        // get group info
+        $.getJSON('/group', {id: groupID}, function (group) {
+
+            triiListElem.empty();
+
+            var triis = group['triis'];
+            for (var i = 0; i < triis.length; i++) {
+                var triiID = triis[i];
+
+                $.getJSON('/trii', {id: triiID}, (function (triiID, trii) {
+                    var liElem = $('<li>');
+                    liElem.text(trii['name']);
+                    liElem.data('trii-id', triiID);
+
+                    // when the <li> element is clicked...
+                    liElem.click(function (e) {
+                        alert('trii-id = ' + triiID);
+                    });
+
+                    triiListElem.append(liElem);
+                }).bind(undefined, triiID));
+            }
+        });
+    }
 });
 </script>
 
