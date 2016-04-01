@@ -48,6 +48,10 @@
     <h2>Trii</h2>
     <table id="message-table"></table>
     <p id="trii-error"></p>
+    <form id="message-send-form">
+        <input type="text" id="message-textbox">
+        <input type="submit" id="message-send-button" value="Send">
+    </form>
 </div>
 
 <script>
@@ -59,6 +63,11 @@ $(document).ready(function () {
     var triiListElem = $('#trii-list');
     var triiListErrorElem = $('#trii-list-error');
     var messageTableElem = $('#message-table');
+    var messageTextboxElem = $('#message-textbox');
+
+    // variables for current selections
+    var selectedGroupID = undefined;
+    var selectedTriiID = undefined;
 	
 	// request the list of groups from the server
 	$.getJSON('/me', function (me) {
@@ -101,6 +110,8 @@ $(document).ready(function () {
         // get group info
         $.getJSON('/group', {id: groupID}, function (group) {
 
+            selectedGroupID = groupID;
+
             triiListElem.empty();
             triiListErrorElem.empty();
 
@@ -134,6 +145,8 @@ $(document).ready(function () {
         // get trii info
         $.getJSON('/trii', {id: triiID}, function (trii) {
 
+            selectedTriiID = triiID;
+
             messageTableElem.empty();
 
             // iterate through list of messages
@@ -162,6 +175,21 @@ $(document).ready(function () {
             triiListErrorElem.text('[failed to get trii]');
         });
     }
+
+    $('#message-send-form').submit(function (e) {
+
+        if (selectedTriiID !== undefined) {
+            $.post('/message', {
+                body: messageTextboxElem.val(),
+                trii_id: selectedTriiID
+            });
+
+            messageTextboxElem.val("");
+        }
+
+        // return false to prevent refresh
+        return false;
+    });
 });
 </script>
 

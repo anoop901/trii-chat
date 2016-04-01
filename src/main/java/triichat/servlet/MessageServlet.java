@@ -21,7 +21,6 @@ public class MessageServlet extends HttpServlet {
         JSONObject message = new JSONObject();
 
         // TODO: populate the JSON with values from the datastore. the following lines are placeholder
-
         try {
             message.put("author", messageID % 2);
             message.put("body", "This message has an ID of " + messageID);
@@ -30,5 +29,16 @@ public class MessageServlet extends HttpServlet {
         }
 
         response.getWriter().println(message);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String messageBody = request.getParameter("body");
+        Long triiID = Long.parseLong(request.getParameter("trii_id"));
+
+        // TODO: insert this message into the database
+        // TODO: notify any users who are listening to this trii
+        System.out.println("trii: " + triiID + ", message: " + messageBody);
     }
 }
