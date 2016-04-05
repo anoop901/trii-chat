@@ -1,14 +1,20 @@
 package triichat.servlet;
 
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import triichat.Group;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by anoop on 3/30/16.
@@ -20,9 +26,19 @@ public class MeServlet extends HttpServlet {
         JSONArray groups = new JSONArray();
 
         // TODO: populate the JSON with values from the datastore. the following lines are placeholder
-        groups.put(10);
-        groups.put(20);
-        groups.put(30);
+        // Get user that's logged in
+
+        UserService userService = UserServiceFactory.getUserService();
+        User gUser = userService.getCurrentUser();
+        triichat.User user = triichat.User.findUser(gUser);
+        if(user == null){
+            user = triichat.User.createUser(gUser);
+        }
+        // Get their groups and put group ids in the groups json array
+        Set<Group> triiGroups = user.getGroups();
+        for(Group g : triiGroups){
+            groups.put(g.getId());
+        }
 
         try {
             me.put("groups", groups);
