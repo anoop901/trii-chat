@@ -43,6 +43,7 @@ public class User {
         made.federatedId = user.getFederatedIdentity();
         made.authDomain = user.getAuthDomain();
         made.name = user.getNickname();
+		made.email = user.getEmail();
         OfyService.save(made);
         return made;
     }

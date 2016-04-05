@@ -95,5 +95,13 @@ public class OfyService {
     public Message getMessage(Long id){
         return ofy().load().type(Message.class).id(id).now();
     }
+
+    public Trii getTrii(Long id){
+        return ofy().load().type(Trii.class).id(id).now();
+    }
+
+    public User getUser(String id){
+        return ofy().load().type(User.class).id(id).now();
+    }
     
 }
