@@ -83,9 +83,14 @@ public class OfyService {
      * @param value
      * @return
      */
-    public List<Object> loadWithFilter(Class<Object> type, String condition, Object value){
+    public static List<Object> loadWithFilter(Class type, String condition, Object value){
     	return OfyService.load().type(type).filter(condition, value).list();
     }
+
+    public static Group getGroup(Long id) {
+        return ofy().load().type(Group.class).id(id).now();
+    }
+
 
     public Message getMessage(Long id){
         return ofy().load().type(Message.class).id(id).now();
