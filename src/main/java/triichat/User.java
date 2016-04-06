@@ -1,5 +1,6 @@
 package triichat;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class User {
 	@Id private String id;	//Objectify id uses user id from com.google.appengine.api.users.UserServlet
 	//following fields can be gotten from com.google.appengine.api.users.UserServlet
     @Index private String name;
-    private String email;
+    @Index private String email;
     private String federatedId;
     private String authDomain;
     @Load private Set<Ref<User>> contacts;
@@ -130,6 +131,16 @@ public class User {
 	public static List<User> findUserByName(String name){
 		List<User> found = OfyService.ofy().load().type(User.class).filter("name",name).list();
 		return found;
+	}
+
+	/**
+	 * UNTESTED
+	 * Finds user in datastore by email. Expensive operation.
+	 * @param email
+	 * @return Set of users since multiple users can have same email (maybe)
+	 */
+	public static List<User> findUserByEmail(String email){
+		return OfyService.ofy().load().type(User.class).filter("email", email).list();
 	}
 	
 }
