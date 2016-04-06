@@ -3,12 +3,16 @@ package triichat.servlet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import triichat.Message;
+import triichat.OfyService;
+import triichat.Trii;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Created by anoop on 3/30/16.
@@ -21,10 +25,15 @@ public class TriiServlet extends HttpServlet {
         JSONObject trii = new JSONObject();
         JSONArray messages = new JSONArray();
 
-        // TODO: populate the JSON with values from the datastore. the following lines are placeholder
-        messages.put(triiID * 10 + 1);
-        messages.put(triiID * 10 + 2);
-        messages.put(triiID * 10 + 3);
+        // TODO: test this code and Trii.getMessages()
+        // populate the JSON with values from the datastore. the following lines are placeholder
+
+        Trii currentTrii = OfyService.getTrii(triiID);
+
+        Set<Message> messageSet = currentTrii.getMessages();
+
+        for(Message m : messageSet)
+            messages.put(m.getId());
 
         try {
             trii.put("name", "Trii" + triiID);

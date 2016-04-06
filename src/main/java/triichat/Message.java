@@ -22,7 +22,7 @@ public class Message {
     @Load private Set<Ref<Message>> replies;
     private Date timestamp;
 	private Key<User> author;
-    
+
     private Message(){}
     
     /**
@@ -88,5 +88,26 @@ public class Message {
 
 	public User getAuthor(){
 		return OfyService.load().key(this.author).now();
+	}
+
+    /**
+     * Returns a set containing all descendant messages
+     * Adds the immediate children messages and calls getAllReplies for each immediate reply
+     * @return
+     */
+	public Set<Message> getAllReplies() {
+		Set<Message> retval = new HashSet<Message>();
+
+        for(Ref<Message> r : this.replies)
+        {
+            Message m = r.get();
+            // add the immediate child and all its child messages
+            retval.add(m);
+
+            Set<Message> childrenReplies = m.getAllReplies();
+            retval.addAll(childrenReplies);
+        }
+
+        return retval;
 	}
 }
