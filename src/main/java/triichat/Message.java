@@ -83,4 +83,25 @@ public class Message {
         OfyService.save(this);
 		
 	}
+
+    /**
+     * Returns a set containing all descendant messages
+     * Adds the immediate children messages and calls getAllReplies for each immediate reply
+     * @return
+     */
+	public Set<Message> getAllReplies() {
+		Set<Message> retval = new HashSet<Message>();
+
+        for(Ref<Message> r : this.replies)
+        {
+            Message m = r.get();
+            // add the immediate child and all its child messages
+            retval.add(m);
+
+            Set<Message> childrenReplies = m.getAllReplies();
+            retval.addAll(childrenReplies);
+        }
+
+        return retval;
+	}
 }

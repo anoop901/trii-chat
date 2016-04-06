@@ -3,6 +3,10 @@ import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Load;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by matthewzhan on 3/8/16.
  */
@@ -50,4 +54,17 @@ public class Trii {
     	this.name = name;
         OfyService.save(this);
     }
+
+    /**
+     * Returns a Set containing all messages within this Trii
+     * @return
+     */
+    public Set<Message> getMessages()
+    {
+        Set<Message> retval = this.root.get().getAllReplies();
+        retval.add(this.root.get());
+        return retval;
+    }
+
+
 }
