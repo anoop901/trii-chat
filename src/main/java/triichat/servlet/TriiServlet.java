@@ -21,6 +21,7 @@ public class TriiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         long triiID = Long.parseLong(request.getParameter("id"));
+        Trii theTrii = OfyService.getTrii(triiID);
 
         JSONObject trii = new JSONObject();
         JSONArray messages = new JSONArray();
@@ -36,7 +37,7 @@ public class TriiServlet extends HttpServlet {
             messages.put(m.getId());
 
         try {
-            trii.put("name", "Trii" + triiID);
+            trii.put("name", currentTrii.getName());
             trii.put("messages", messages);
         } catch (JSONException e) {
             e.printStackTrace();
