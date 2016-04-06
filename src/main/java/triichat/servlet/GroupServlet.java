@@ -29,7 +29,8 @@ public class GroupServlet extends HttpServlet {
         JSONArray triis = new JSONArray();
         JSONArray members = new JSONArray();
 
-        // TODO: populate the JSON with values from the datastore. the following lines are placeholder
+        // TODO: test this code
+        // populate the JSON with values from the datastore. the following lines are placeholder
         Group currentGroup = OfyService.getGroup(groupID);
         Set<Trii> triiSet = currentGroup.getTriis();
         Set<User> userSet = currentGroup.getUsers();
