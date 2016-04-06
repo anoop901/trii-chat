@@ -35,7 +35,7 @@ public class UserServlet extends HttpServlet {
             contacts.put(u.getId());
 
         try {
-            user.put("name", "User" + userID);
+            user.put("name", currentUser.getName());
             user.put("contacts", contacts);
         } catch (JSONException e) {
             e.printStackTrace();

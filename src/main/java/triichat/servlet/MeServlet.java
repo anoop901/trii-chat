@@ -41,6 +41,7 @@ public class MeServlet extends HttpServlet {
         }
 
         try {
+            me.put("id", user.getId());
             me.put("groups", groups);
         } catch (JSONException e) {
             e.printStackTrace();

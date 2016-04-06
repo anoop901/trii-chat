@@ -41,7 +41,7 @@ public class GroupServlet extends HttpServlet {
             members.put(u.getId());
 
         try {
-            group.put("name", "Group" + groupID);
+            group.put("name", currentGroup.getName());
             group.put("triis", triis);
             group.put("members", members);
         } catch (JSONException e) {
