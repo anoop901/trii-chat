@@ -21,7 +21,8 @@ public class Message {
     @Load private Set<Ref<Message>> parents;
     @Load private Set<Ref<Message>> replies;
     private Date timestamp;
-    
+	private Key<User> author;
+
     private Message(){}
     
     /**
@@ -29,11 +30,11 @@ public class Message {
      * @param content
      * @param parents
      */
-    public static Message createMessage(String content, Set<Message> parents){
-    	return new Message(content,parents);
+    public static Message createMessage(String content, Set<Message> parents, User author){
+    	return new Message(content,parents,author);
     }
     
-    private Message(String content, Set<Message> parents){
+    private Message(String content, Set<Message> parents,User author ){
     	this.content = content;
     	this.parents = new HashSet<Ref<Message>>();
     	for(Message p : parents){
@@ -43,6 +44,7 @@ public class Message {
     	}
     	this.replies = new HashSet<Ref<Message>>();
     	this.timestamp = new Date();
+		this.author = Key.create(author);
         OfyService.save(this);
     }
     
@@ -82,6 +84,10 @@ public class Message {
 		this.parents.add(Ref.create(parent));
         OfyService.save(this);
 		
+	}
+
+	public User getAuthor(){
+		return OfyService.load().key(this.author).now();
 	}
 
     /**
