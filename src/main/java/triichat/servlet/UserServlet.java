@@ -3,9 +3,7 @@ package triichat.servlet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import triichat.Group;
 import triichat.OfyService;
-import triichat.Trii;
 import triichat.User;
 
 import javax.servlet.ServletException;
