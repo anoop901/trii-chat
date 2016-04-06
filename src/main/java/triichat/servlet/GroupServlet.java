@@ -23,7 +23,7 @@ public class GroupServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         long groupID = Long.parseLong(request.getParameter("id"));
-        Group theGroup = OfyService.getGroup(groupID);
+        Group currentGroup = OfyService.getGroup(groupID);
 
         JSONObject group = new JSONObject();
         JSONArray triis = new JSONArray();
@@ -31,7 +31,6 @@ public class GroupServlet extends HttpServlet {
 
         // TODO: test this code
         // populate the JSON with values from the datastore. the following lines are placeholder
-        Group currentGroup = OfyService.getGroup(groupID);
         Set<Trii> triiSet = currentGroup.getTriis();
         Set<User> userSet = currentGroup.getUsers();
 
@@ -40,15 +39,6 @@ public class GroupServlet extends HttpServlet {
 
         for (User u : userSet)
             members.put(u.getId());
-
-        Set<Trii> theTriis = theGroup.getTriis();
-        for(Trii t : theTriis){
-            triis.put(t.getId());
-        }
-        Set<User> theUsers = theGroup.getUsers();
-        for(User u : theUsers){
-            members.put(u.getId());
-        }
 
         try {
             group.put("name", "Group" + groupID);
