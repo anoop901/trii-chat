@@ -1,5 +1,7 @@
 package triichat.servlet;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.Objectify;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -51,8 +54,31 @@ public class GroupServlet extends HttpServlet {
         response.getWriter().println(group);
     }
 
+    /**
+     * Create a group in the database containing only the currently logged-in user,
+     * and with no trees, and the name given as the "name" parameter in the request
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO: create a group in the database containing only the currently logged-in user, and with no trees, and the name given as the "name" parameter in the request
+        String name = req.getParameter("name");
+        if(name == null){
+            //TODO: Error Message because no "name" parameter in request
+            return;
+        }
+        // Get user that's logged in
+
+        UserService userService = UserServiceFactory.getUserService();
+        com.google.appengine.api.users.User gUser = userService.getCurrentUser();
+        triichat.User user = triichat.User.findUser(gUser);
+        if(user == null){
+            user = triichat.User.createUser(gUser);
+        }
+        Set<User> users = new HashSet<User>();
+        users.add(user);
+        Group.createGroup(name,users,null);
     }
 }
