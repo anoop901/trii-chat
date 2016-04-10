@@ -39,14 +39,17 @@
     <p id="group-list-error"></p>
 </div>
 
-<div id="trii-list-section">
-    <h2>Triis</h2>
+<div id="group-view">
+    <h2 id="group-name">---</h2>
+    <h3>Members</h3>
+    <ul id="user-list"></ul>
+    <h3>Triis</h3>
     <ul id="trii-list"></ul>
-    <p id="trii-list-error"></p>
+    <p id="group-error"></p>
 </div>
 
 <div id="trii-view">
-    <h2>Trii</h2>
+    <h2 id="trii-name">---</h2>
     <table id="message-table"></table>
     <p id="trii-error"></p>
     <form id="message-send-form">
@@ -61,10 +64,12 @@ $(document).ready(function () {
     // references to some elements
     var groupListElem = $('#group-list');
     var groupListErrorElem = $('#group-list-error');
+    var userListElem = $('#user-list');
     var triiListElem = $('#trii-list');
-    var triiListErrorElem = $('#trii-list-error');
+    var groupErrorElem = $('#group-error');
     var messageTableElem = $('#message-table');
     var messageTextboxElem = $('#message-textbox');
+    var triiErrorElem = $('#trii-error');
 
     // variables for current selections
     var selectedGroupID = undefined;
@@ -113,8 +118,24 @@ $(document).ready(function () {
 
             selectedGroupID = groupID;
 
+            $('#group-name').text(group['name']);
+
+            userListElem.empty();
             triiListElem.empty();
-            triiListErrorElem.empty();
+            groupErrorElem.empty();
+
+            // iterate through list of users in group
+            var members = group['members'];
+            for (var i = 0; i < members.length; i++) {
+                var userID = members[i];
+
+                // get this user's name
+                $.getJSON('/user', {id: userID}, function (user) {
+                    var liElem = $('<li>');
+                    liElem.text(user['name']);
+                    userListElem.append(liElem);
+                });
+            }
 
             // iterate through list of triis
             var triis = group['triis'];
@@ -138,7 +159,7 @@ $(document).ready(function () {
         }).fail(function () {
             // display an error message
             triiListElem.empty();
-            triiListErrorElem.text('[failed to get trii list]');
+            groupErrorElem.text('[failed to get group]');
         });
     }
 
@@ -147,6 +168,8 @@ $(document).ready(function () {
         $.getJSON('/trii', {id: triiID}, function (trii) {
 
             selectedTriiID = triiID;
+
+            $('#trii-name').text(trii['name']);
 
             messageTableElem.empty();
 
@@ -173,7 +196,7 @@ $(document).ready(function () {
         }).fail(function () {
             // display an error message
             triiListElem.empty();
-            triiListErrorElem.text('[failed to get trii]');
+            triiErrorElem.text('[failed to get trii]');
         });
     }
 
@@ -192,11 +215,14 @@ $(document).ready(function () {
         return false;
     });
 
-    $('#group-create-button').click(function (e) {
+    $('#create-group-button').click(function (e) {
 
-        $.post('/group', {
-
-        });
+        var newGroupName = window.prompt("Enter name of new group");
+        if (newGroupName != null) {
+            $.post('/group', {
+                name: newGroupName
+            });
+        }
     });
 });
 </script>
@@ -205,7 +231,7 @@ $(document).ready(function () {
     	}else{
 %>
 <p>You have not created an account with TriiChat. Would you like to create a TriiChat account?</p>
-<form action="userPage.jsp">
+<form action="/userPage.jsp">
     <input type="submit" value="Create TriiChat User">
 </form>
 <%	
