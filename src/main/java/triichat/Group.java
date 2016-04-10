@@ -54,6 +54,7 @@ public class Group {
     
     public void addUser(User user){
         this.users.add(Ref.create(user));
+        user.addGroup(this);
         OfyService.save(this);
     }
 
