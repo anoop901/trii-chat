@@ -25,7 +25,7 @@ public class MeServlet extends HttpServlet {
 
         JSONArray groups = new JSONArray();
 
-        // TODO: populate the JSON with values from the datastore. the following lines are placeholder
+        // TODO: test
         // Get user that's logged in
 
         UserService userService = UserServiceFactory.getUserService();
