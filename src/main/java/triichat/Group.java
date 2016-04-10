@@ -29,12 +29,18 @@ public class Group {
     private Group(String name, Set<User> users, Set<Trii> triis){
     	this.name = name;
     	this.users = new HashSet<Ref<User>>();
-    	for(User u : users){
-    		this.users.add(Ref.create(u));
-    	}
-    	for(Trii t : triis){
-    		this.triis.add(Ref.create(t));
-    	}
+        this.triis = new HashSet<Ref<Trii>>();
+        if(users != null){
+            for(User u : users){
+                this.users.add(Ref.create(u));
+            }
+        }
+    	if(triis != null){
+            for(Trii t : triis){
+                this.triis.add(Ref.create(t));
+            }
+        }
+
         OfyService.save(this);
     }
     
