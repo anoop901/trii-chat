@@ -22,19 +22,24 @@ public class Message {
     @Load private Set<Ref<Message>> replies;
     private Date timestamp;
 	private Key<User> author;
+	private Key<Trii> holder; //Trii that holds this message
 
     private Message(){}
     
     /**
-     * Creates and saves message to datastore
+     * Creates and saves message to datastore and associated trii
      * @param content
      * @param parents
      */
-    public static Message createMessage(String content, Set<Message> parents, User author){
-    	return new Message(content,parents,author);
+    public static Message createMessage(String content, Set<Message> parents, User author, Trii trii){
+		if(parents == null || author == null || content == null || trii == null) throw new IllegalArgumentException();
+    	Message retval = new Message(content,parents,author,trii);
+		OfyService.save(retval);
+		trii.addMessage(retval);
+		return retval;
     }
     
-    private Message(String content, Set<Message> parents,User author ){
+    private Message(String content, Set<Message> parents,User author,Trii trii ){
     	this.content = content;
     	this.parents = new HashSet<Ref<Message>>();
     	for(Message p : parents){
@@ -45,7 +50,7 @@ public class Message {
     	this.replies = new HashSet<Ref<Message>>();
     	this.timestamp = new Date();
 		this.author = Key.create(author);
-        OfyService.save(this);
+		this.holder = Key.create(Trii.class, trii.getId());
     }
     
     public Long getId(){
@@ -55,7 +60,11 @@ public class Message {
 	public String getContent() {
 		return content;
 	}
-	
+
+	public Trii getTrii(){
+		return OfyService.getTrii(this.holder.getId());
+	}
+
 	public Set<Message> getParents() {
 		Set<Message> retval = new HashSet<Message>();
 		for(Ref<Message> r : this.parents){
@@ -93,6 +102,7 @@ public class Message {
     /**
      * Returns a set containing all descendant messages
      * Adds the immediate children messages and calls getAllReplies for each immediate reply
+	 * TODO: Make this actually get all kids not just first kid's kid etc.
      * @return
      */
 	public Set<Message> getAllReplies() {

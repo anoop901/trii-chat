@@ -1,11 +1,11 @@
 package triichat;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Load;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by matthewzhan on 3/8/16.
@@ -15,7 +15,7 @@ public class Trii {
 	@Id private Long id;
     String name;
     @Load Ref<Message> root;
-
+    @Load Set<Ref<Message>> all;
     private Trii(){}
     
     /**
@@ -30,6 +30,8 @@ public class Trii {
     {
         this.name = name;
         this.root = Ref.create(firstMessage);
+        this.all = new TreeSet<>();
+        all.add(root);
         OfyService.save(this);
     }
 
@@ -56,15 +58,30 @@ public class Trii {
     }
 
     /**
-     * Returns a Set containing all messages within this Trii
+     * Returns a Set containing all messages within this Trii.
+     * Unsorted
      * @return
      */
     public Set<Message> getMessages()
     {
-        Set<Message> retval = this.root.get().getAllReplies();
-        retval.add(this.root.get());
+        Set<Message> retval = new TreeSet<Message>();
+        for(Ref<Message> r : this.all){
+            retval.add(r.get());
+        }
         return retval;
     }
 
+    /**
+     * Adds a message to a trii
+     * @param m
+     */
+    public void addMessage(Message m){
+        Key<Message> key = Key.create(Message.class, m.getId());
+        Ref<Message> ref = Ref.create(key);
+        if(this.all.contains(ref)){return;}//already has it
+        this.all.add(ref);
+        OfyService.save(this);
+        return;
+    }
 
 }

@@ -56,19 +56,19 @@ public class MessageServlet extends HttpServlet {
         Set<Message> parents = new HashSet<Message>();
         parents.add(getMostRecent(trii));
         // Create message
-        Message.createMessage(messageBody, parents, user);
-
+        Message.createMessage(messageBody, parents, user,trii);
         // TODO: notify any users who are listening to this trii
         System.out.println("trii: " + triiID + ", message: " + messageBody);
     }
 
     private Message getMostRecent(Trii trii){
+        Set<Message> all = trii.getMessages();
         Message retval = trii.getRoot();
-
-        while(!retval.getReplies().isEmpty()){
-            retval = retval.getReplies().iterator().next();
+        for(Message m : all){
+            if(retval.getTimeStamp().after(m.getTimeStamp())){
+                retval = m;
+            }
         }
-
         return retval;
     }
 }
