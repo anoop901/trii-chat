@@ -38,6 +38,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <servlet-name>UserNameSearchServlet</servlet-name>
         <servlet-class>triichat.servlet.UserNameSearchServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddUserToGroupServlet</servlet-name>
+        <servlet-class>triichat.servlet.AddUserToGroupServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>Me</servlet-name>

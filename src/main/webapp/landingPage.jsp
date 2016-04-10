@@ -34,6 +34,7 @@
 
 <div id="group-list-section">
     <h2>Groups</h2>
+    <input type="button" id="create-group-button" value="Create Group">
     <ul id="group-list"></ul>
     <p id="group-list-error"></p>
 </div>
@@ -189,6 +190,13 @@ $(document).ready(function () {
 
         // return false to prevent refresh
         return false;
+    });
+
+    $('#group-create-button').click(function (e) {
+
+        $.post('/group', {
+
+        });
     });
 });
 </script>

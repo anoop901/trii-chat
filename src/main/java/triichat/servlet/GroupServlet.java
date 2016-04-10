@@ -50,4 +50,9 @@ public class GroupServlet extends HttpServlet {
 
         response.getWriter().println(group);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // TODO: create a group in the database containing only the currently logged-in user, and with no trees, and the name given as the "name" parameter in the request
+    }
 }

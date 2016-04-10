@@ -45,4 +45,12 @@ public class TriiServlet extends HttpServlet {
 
         response.getWriter().println(trii);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // request parameter "name" contains the name of the new trii
+        // request parameter "group" contains the group ID where this trii will be added
+        // TODO: create a trii in the database within the specified group with no messages, with the specified name
+        // TODO: notify any active users in the group that a new trii has been created
+    }
 }
