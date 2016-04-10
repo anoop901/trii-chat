@@ -19,7 +19,7 @@ public class Trii {
     private Trii(){}
     
     /**
-     * Creates and saves Trii in datastore
+     * Creates and saves Trii in datastore. Can use null firstMessage to create empty trii.
      * @param name
      * @param firstMessage 
      */
@@ -29,14 +29,20 @@ public class Trii {
     private Trii(String name, Message firstMessage)
     {
         this.name = name;
-        this.root = Ref.create(firstMessage);
         this.all = new TreeSet<>();
-        all.add(root);
+        if(firstMessage != null) {
+            this.root = Ref.create(firstMessage);
+            all.add(root);
+        }else{
+            this.root = null;
+        }
         OfyService.save(this);
     }
 
+
     public Message getRoot()
     {
+        if(this.root == null) return null;
         return root.get();
     }
     
@@ -80,6 +86,9 @@ public class Trii {
         Ref<Message> ref = Ref.create(key);
         if(this.all.contains(ref)){return;}//already has it
         this.all.add(ref);
+        if(this.root == null){
+            this.root = Ref.create(Key.create(Message.class,m.getId()));
+        }
         OfyService.save(this);
         return;
     }

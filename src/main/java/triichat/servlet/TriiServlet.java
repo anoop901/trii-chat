@@ -52,6 +52,12 @@ public class TriiServlet extends HttpServlet {
         // request parameter "group" contains the group ID where this trii will be added
         // TODO: create a trii in the database within the specified group with no messages, with the specified name
         // TODO: notify any active users in the group that a new trii has been created
-
+        String name = req.getParameter("name");
+        Long groupId = Long.parseLong(req.getParameter("group"));
+        if(name == null || groupId == null){
+            //TODO: Error Message
+            throw new IllegalArgumentException();
+        }
+        Trii trii = Trii.createTrii(name,null);
     }
 }

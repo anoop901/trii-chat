@@ -45,7 +45,11 @@ public class Group {
     }
     
     public static Group createGroup(String name, Set<User> users, Set<Trii> triis){
-    	return new Group(name,users,triis);
+    	Group retval =  new Group(name,users,triis);
+        for(User u : users){
+            u.addGroup(retval);
+        }
+        return retval;
     }
     
     public void addUser(User user){
