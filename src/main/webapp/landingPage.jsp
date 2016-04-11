@@ -42,9 +42,10 @@
 <div id="group-view">
     <h2 id="group-name">---</h2>
     <h3>Members</h3>
-    <input type="button" id="add-user-to-group-button" value="Add Someone">
+    <input type="button" id="add-user-to-group-button" value="Add Someone" disabled>
     <ul id="user-list"></ul>
     <h3>Triis</h3>
+    <input type="button" id="create-trii-button" value="New Trii" disabled>
     <ul id="trii-list"></ul>
     <p id="group-error"></p>
 </div>
@@ -54,8 +55,8 @@
     <table id="message-table"></table>
     <p id="trii-error"></p>
     <form id="message-send-form">
-        <input type="text" id="message-textbox">
-        <input type="submit" id="message-send-button" value="Send">
+        <input type="text" id="message-textbox" disabled>
+        <input type="submit" id="message-send-button" value="Send" disabled>
     </form>
 </div>
 
@@ -63,13 +64,17 @@
 $(document).ready(function () {
 
     // references to some elements
+    var createGroupButtonElem = $('#create-group-button');
     var groupListElem = $('#group-list');
     var groupListErrorElem = $('#group-list-error');
+    var addUserToGroupButtonElem = $('#add-user-to-group-button');
     var userListElem = $('#user-list');
+    var createTriiButtonElem = $('#create-trii-button');
     var triiListElem = $('#trii-list');
     var groupErrorElem = $('#group-error');
     var messageTableElem = $('#message-table');
     var messageTextboxElem = $('#message-textbox');
+    var messageSendButtonElem = $('#message-send-button');
     var triiErrorElem = $('#trii-error');
 
     // variables for current selections
@@ -120,6 +125,14 @@ $(document).ready(function () {
             selectedGroupID = groupID;
 
             $('#group-name').text(group['name']);
+            $('#trii-name').text('---');
+
+            // enable the buttons
+            addUserToGroupButtonElem.prop('disabled', false);
+            createTriiButtonElem.prop('disabled', false);
+            // disable the message form inputs
+            messageTextboxElem.prop('disabled', true);
+            messageSendButtonElem.prop('disabled', true);
 
             userListElem.empty();
             triiListElem.empty();
@@ -194,6 +207,11 @@ $(document).ready(function () {
 
                 }).bind(undefined, messageID));
             }
+
+            // enable the message form inputs
+            messageTextboxElem.prop('disabled', false);
+            messageSendButtonElem.prop('disabled', false);
+
         }).fail(function () {
             // display an error message
             triiListElem.empty();
@@ -216,9 +234,9 @@ $(document).ready(function () {
         return false;
     });
 
-    $('#create-group-button').click(function (e) {
+    createGroupButtonElem.click(function (e) {
 
-        var newGroupName = window.prompt("Enter name of new group");
+        var newGroupName = window.prompt("Enter name of new group:");
         if (newGroupName != null) {
             $.post('/group', {
                 name: newGroupName
@@ -226,7 +244,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#add-user-to-group-button').click(function (e) {
+    addUserToGroupButtonElem.click(function (e) {
 
         var newUserName = window.prompt("Who do you want to add to this group?");
 
@@ -242,6 +260,19 @@ $(document).ready(function () {
                 window.alert("There is no user with the name " + newUserName);
             }
         });
+    });
+
+    createTriiButtonElem.click(function (e) {
+
+        var newTriiName = window.prompt("Enter name of new trii:");
+
+        if (newTriiName != null) {
+            // create the trii
+            $.post('/trii', {
+                name: newTriiName,
+                group: selectedGroupID
+            });
+        }
     });
 });
 </script>

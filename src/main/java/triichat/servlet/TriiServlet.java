@@ -3,6 +3,7 @@ package triichat.servlet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import triichat.Group;
 import triichat.Message;
 import triichat.OfyService;
 import triichat.Trii;
@@ -54,6 +55,7 @@ public class TriiServlet extends HttpServlet {
         // TODO: notify any active users in the group that a new trii has been created
         String name = req.getParameter("name");
         Long groupId = Long.parseLong(req.getParameter("group"));
+        System.out.println("Creating trii with name=\""+ name +"\" and ID=" + groupId);
         if(name == null || groupId == null){
             //TODO: Error Message
             throw new IllegalArgumentException();

@@ -80,5 +80,7 @@ public class GroupServlet extends HttpServlet {
         Set<User> users = new HashSet<User>();
         users.add(user);
         Group.createGroup(name,users,null);
+
+        // TODO: notify the user
     }
 }
