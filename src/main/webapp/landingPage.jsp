@@ -42,6 +42,7 @@
 <div id="group-view">
     <h2 id="group-name">---</h2>
     <h3>Members</h3>
+    <input type="button" id="add-user-to-group-button" value="Add Someone">
     <ul id="user-list"></ul>
     <h3>Triis</h3>
     <ul id="trii-list"></ul>
@@ -223,6 +224,24 @@ $(document).ready(function () {
                 name: newGroupName
             });
         }
+    });
+
+    $('#add-user-to-group-button').click(function (e) {
+
+        var newUserName = window.prompt("Who do you want to add to this group?");
+
+        // search for any users with this name
+        $.getJSON('/username-search', {name: newUserName}, function (searchResults) {
+            var users = searchResults['users'];
+            // TODO: in case of multiple results allow the user to actually choose a user somehow, instead of random choice
+            if (users.length > 0) {
+                // randomly choose a user
+                var userID = users[Math.floor(Math.random() * users.length)];
+                $.get('/add-user-to-group', {user: userID, group: selectedGroupID});
+            } else {
+                window.alert("There is no user with the name " + newUserName);
+            }
+        });
     });
 });
 </script>
