@@ -21,21 +21,16 @@ public class Trii {
     /**
      * Creates and saves Trii in datastore. Can use null firstMessage to create empty trii.
      * @param name
-     * @param firstMessage 
+     *
      */
-    public static Trii createTrii(String name, Message firstMessage){
-    	return new Trii(name, firstMessage);
+    public static Trii createTrii(String name){
+    	return new Trii(name);
     }
-    private Trii(String name, Message firstMessage)
+    private Trii(String name)
     {
         this.name = name;
-        this.all = new TreeSet<>();
-        if(firstMessage != null) {
-            this.root = Ref.create(firstMessage);
-            all.add(root);
-        }else{
-            this.root = null;
-        }
+        this.all = new HashSet<Ref<Message>>();
+        this.root = null;
         OfyService.save(this);
     }
 
@@ -43,7 +38,7 @@ public class Trii {
     public Message getRoot()
     {
         if(this.root == null) return null;
-        return root.get();
+        else return root.get();
     }
     
     public String getName(){
@@ -70,7 +65,10 @@ public class Trii {
      */
     public Set<Message> getMessages()
     {
-        Set<Message> retval = new TreeSet<Message>();
+        Set<Message> retval = new HashSet<Message>();
+        if(this.all == null){
+            this.all = new HashSet<>();
+        }
         for(Ref<Message> r : this.all){
             retval.add(r.get());
         }
@@ -84,10 +82,13 @@ public class Trii {
     public void addMessage(Message m){
         Key<Message> key = Key.create(Message.class, m.getId());
         Ref<Message> ref = Ref.create(key);
+        if(this.all == null){
+            this.all = new HashSet<>();
+        }
         if(this.all.contains(ref)){return;}//already has it
         this.all.add(ref);
         if(this.root == null){
-            this.root = Ref.create(Key.create(Message.class,m.getId()));
+            this.root = ref;
         }
         OfyService.save(this);
         return;

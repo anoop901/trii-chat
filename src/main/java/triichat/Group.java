@@ -46,6 +46,8 @@ public class Group {
     
     public static Group createGroup(String name, Set<User> users, Set<Trii> triis){
     	Group retval =  new Group(name,users,triis);
+        if(retval.users == null) retval.users = new HashSet<Ref<User>>();
+        if(retval.triis == null) retval.triis = new HashSet<Ref<Trii>>();
         for(User u : users){
             retval.addUser(u);
             u.addGroup(retval);
@@ -59,6 +61,7 @@ public class Group {
     }
 
     public void addTrii(Trii trii){
+        if(this.triis == null) this.triis = new HashSet<Ref<Trii>>();
         this.triis.add(Ref.create(trii));
         OfyService.save(this);
     }

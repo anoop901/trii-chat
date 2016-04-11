@@ -60,6 +60,8 @@ public class TriiServlet extends HttpServlet {
             //TODO: Error Message
             throw new IllegalArgumentException();
         }
-        Trii trii = Trii.createTrii(name,null);
+        Trii trii = Trii.createTrii(name);
+        Group group = OfyService.getGroup(groupId);
+        group.addTrii(trii);
     }
 }

@@ -54,7 +54,8 @@ public class MessageServlet extends HttpServlet {
         // get most recent message to make it the parent as default
         // TODO: eventually make this use actual parent
         Set<Message> parents = new HashSet<Message>();
-        parents.add(getMostRecent(trii));
+        Message recent = getMostRecent(trii);
+        if(recent != null){parents.add(recent);}
         // Create message
         Message.createMessage(messageBody, parents, user,trii);
         // TODO: notify any users who are listening to this trii
@@ -63,6 +64,7 @@ public class MessageServlet extends HttpServlet {
 
     private Message getMostRecent(Trii trii){
         Set<Message> all = trii.getMessages();
+        if(all.isEmpty()){return null;}
         Message retval = trii.getRoot();
         for(Message m : all){
             if(retval.getTimeStamp().after(m.getTimeStamp())){
