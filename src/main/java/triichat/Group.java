@@ -83,6 +83,7 @@ public class Group {
      * @return
      */
     public Trii getTrii(String name){
+        if(this.triis == null){return null;}
         for(Ref<Trii> r : this.triis){
         	Trii t = r.get();
         	if(t.getName().equalsIgnoreCase(name)){
