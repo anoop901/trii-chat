@@ -91,7 +91,6 @@ public class User {
 	
 	public void addGroup(Group group){
 		this.groups.add(Ref.create(group));
-		group.addUser(this);
         OfyService.save(this);
 	}
 	

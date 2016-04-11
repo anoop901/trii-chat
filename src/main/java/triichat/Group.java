@@ -47,6 +47,7 @@ public class Group {
     public static Group createGroup(String name, Set<User> users, Set<Trii> triis){
     	Group retval =  new Group(name,users,triis);
         for(User u : users){
+            retval.addUser(u);
             u.addGroup(retval);
         }
         return retval;
@@ -54,7 +55,6 @@ public class Group {
     
     public void addUser(User user){
         this.users.add(Ref.create(user));
-        user.addGroup(this);
         OfyService.save(this);
     }
 
@@ -65,8 +65,10 @@ public class Group {
 
     public Set<Trii> getTriis(){
         Set<Trii> retval = new HashSet<Trii>();
-        for(Ref<Trii> r : this.triis){
-        	retval.add(r.get());
+        if (this.triis != null) {
+            for(Ref<Trii> r : this.triis){
+                retval.add(r.get());
+            }
         }
         return retval;
     }
@@ -89,8 +91,10 @@ public class Group {
 
     public Set<User>  getUsers(){
         Set<User> retval = new HashSet<User>();
-        for(Ref<User> r : this.users){
-        	retval.add(r.get());
+        if (this.users != null) {
+            for(Ref<User> r : this.users){
+                retval.add(r.get());
+            }
         }
         return retval;
     }
