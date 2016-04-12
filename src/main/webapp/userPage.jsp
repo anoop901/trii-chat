@@ -14,7 +14,6 @@
 	UserService userService = UserServiceFactory.getUserService();
 	User user = userService.getCurrentUser();
 	triichat.User triiUser = triichat.User.createUser(user);
-	response.sendRedirect("/landingPage.jsp");
 %>
 <p>Welcome, <%= triiUser.getName() %></p>
 </body>

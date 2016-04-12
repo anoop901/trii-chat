@@ -21,7 +21,7 @@
 <div id="createTrii" class="overlay">
     <div class="popup">
       <h2>Create a new Trii</h2>
-      <a class="close" href="#">&times;</a>
+      <a class="close" onclick="$('#createTrii').removeClass('visible')">&times;</a>
       <div class="content">
       	<form action="/trii" id="createTriiForm">
 		  <label for="name">Trii Name:</label>
@@ -46,7 +46,7 @@ $( "#createTriiForm" ).submit(function( event ) {
   // Send the data using post
   var posting = $.post( url, data, function( trii ) {
 	  addTrii(trii);
-	  location.hash = "#";
+	  $('#createTrii').removeClass('visible');
   }, "json");
 });
 </script>

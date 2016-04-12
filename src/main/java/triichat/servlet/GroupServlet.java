@@ -27,7 +27,8 @@ public class GroupServlet extends HttpServlet {
 
         long groupID = Long.parseLong(request.getParameter("id"));
         Group currentGroup = OfyService.getGroup(groupID);
-
+        
+        response.setContentType("application/json");
         JSONObject group = new JSONObject();
         JSONArray triis = new JSONArray();
         JSONArray members = new JSONArray();
@@ -91,7 +92,7 @@ public class GroupServlet extends HttpServlet {
         Group currentGroup = Group.createGroup(name,users,null);
 
         // TODO: notify the userGroup currentGroup = OfyService.getGroup(groupID);
-
+        resp.setContentType("application/json");
         JSONObject group = new JSONObject();
         JSONArray triis = new JSONArray();
         JSONArray members = new JSONArray();

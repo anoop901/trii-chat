@@ -85,6 +85,12 @@ $(document).ready(function () {
 		groupListErrorElem.text('[failed to get group list]');
 	});
 
+	$("body").click(function(){
+		$(".overlay").removeClass('visible');
+	});
+	$(".popup").click(function(e){
+		e.stopPropagation();
+	});
     
 });
 

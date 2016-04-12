@@ -13,7 +13,7 @@
 <div id="addMember" class="overlay">
     <div class="popup">
       <h2>Who do you want to add to this group?</h2>
-      <a class="close" href="#">&times;</a>
+      <a class="close" onclick="$('#addMember').removeClass('visible');">&times;</a>
       <div class="content">
       	<form action="/add-user-to-group" id="addMemberForm">
 		  <label for="name">User Name:</label>
@@ -51,7 +51,9 @@ $( "#addMemberForm" ).submit(function( event ) {
   var posting = $.post( url, data );
  
   // Put the results in a div
-  posting.done(function( data ) {
+  posting.done(function( user ) {
+	  addMember(user);
+	  $('#addMember').removeClass('visible');
   });
 });
 </script> 

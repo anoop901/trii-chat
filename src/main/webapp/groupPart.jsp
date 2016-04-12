@@ -14,7 +14,7 @@
 
 <div id="group-list-section">
     <h2 id="group-header" onclick="clearGroupSelection();">Groups</h2>
-    <a class="button" href="#createGroup" id="create-group-button">Create Group</a>
+    <a class="button" onclick="$('#createGroup').addClass('visible');event.stopPropagation();" id="create-group-button">Create Group</a>
     <ul id="group-list"></ul>
     <p id="group-list-error"></p>
 </div>
@@ -22,7 +22,7 @@
 <div id="createGroup" class="overlay">
     <div class="popup">
       <h2>Create a new Group</h2>
-      <a class="close" href="#">&times;</a>
+      <a class="close" onclick="$('#createGroup').removeClass('visible');">&times;</a>
       <div class="content">
       	<form action="/group" id="createGroupForm">
 		  <label for="name">Group Name:</label>
@@ -50,7 +50,7 @@ $( "#createGroupForm" ).submit(function( event ) {
   // Send the data using post
   var posting = $.post( url, data, function( group ) {
 	  addGroup(group);
-	  location.hash = "#";
+	  $('#createGroup').removeClass('visible');
   }, "json");
 });
 </script>
@@ -130,13 +130,13 @@ function clickedGroup(groupID) {
             
          	// Create Member View
     	    var title = "<h3>Members</h3>";
-    	    var button = $("<a>", {id:"add-user-to-group-button", class:"button", href:"#addMember", text:"Add Someone"});
+    	    var button = $("<a>", {id:"add-user-to-group-button", class:"button", onclick:"$('#addMember').addClass('visible');event.stopPropagation();", text:"Add Someone"});
     	    var ul = $("<ul>", {id:"user-list"});
             $('#group-members').append( title, button, ul );
             
             // Create Trii View
     	    var title = "<h3 onclick='clearTriiSelection();'>Triis</h3>";
-    	    var button = $("<a>", {id:"create-trii-button", class:"button", href:"#createTrii", text:"New Trii"});
+    	    var button = $("<a>", {id:"create-trii-button", class:"button",  onclick:"$('#createTrii').addClass('visible');event.stopPropagation();", text:"New Trii"});
     	    var ul = $("<ul>", {id:"trii-list"});
     	    var error = $("<p>", {id:"group-error"});
             $('#group-triis').append( title, button, ul, error );

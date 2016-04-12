@@ -21,8 +21,9 @@ import java.util.Set;
  */
 public class MeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        JSONObject me = new JSONObject();
-
+    	response.setContentType("application/json");
+    	
+    	JSONObject me = new JSONObject();
         JSONArray groups = new JSONArray();
 
         // TODO: test

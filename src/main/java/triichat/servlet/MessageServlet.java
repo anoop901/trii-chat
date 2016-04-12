@@ -26,6 +26,8 @@ public class MessageServlet extends HttpServlet {
 
         long messageID = Long.parseLong(request.getParameter("id"));
         triichat.Message triiMessage = OfyService.getMessage(messageID);
+        
+        response.setContentType("application/json");  
         JSONObject message = new JSONObject();
 
         // TODO: test this also does it want author id? or name?
@@ -62,6 +64,7 @@ public class MessageServlet extends HttpServlet {
         // TODO: notify any users who are listening to this trii
         System.out.println("trii: " + triiID + ", message: " + messageBody);
         
+        response.setContentType("application/json");
         JSONObject message = new JSONObject();
         try {
         	message.put("id", newMessage.getId());

@@ -24,6 +24,7 @@ public class TriiServlet extends HttpServlet {
         long triiID = Long.parseLong(request.getParameter("id"));
         Trii theTrii = OfyService.getTrii(triiID);
 
+        response.setContentType("application/json");
         JSONObject trii = new JSONObject();
         JSONArray messages = new JSONArray();
 
@@ -65,7 +66,7 @@ public class TriiServlet extends HttpServlet {
         Group group = OfyService.getGroup(groupId);
         group.addTrii(trii);
         
-
+        resp.setContentType("application/json");
         JSONObject newTrii = new JSONObject();
         JSONArray messages = new JSONArray();
         

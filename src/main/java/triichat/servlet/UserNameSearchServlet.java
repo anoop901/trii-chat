@@ -25,6 +25,7 @@ public class UserNameSearchServlet extends HttpServlet {
         //write this
         String name = request.getParameter("name");
 
+        response.setContentType("application/json");
         JSONObject found = new JSONObject();
         JSONArray foundUsers = new JSONArray();
 

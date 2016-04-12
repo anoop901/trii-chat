@@ -25,6 +25,7 @@ public class UserServlet extends HttpServlet {
         String userID = request.getParameter("id");
         User currentUser = OfyService.getUser(userID);
 
+        response.setContentType("application/json");
         JSONObject user = new JSONObject();
         JSONArray contacts = new JSONArray();
 
