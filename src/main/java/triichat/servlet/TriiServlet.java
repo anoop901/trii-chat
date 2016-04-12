@@ -38,6 +38,7 @@ public class TriiServlet extends HttpServlet {
             messages.put(m.getId());
 
         try {
+        	trii.put("id", triiID);
             trii.put("name", currentTrii.getName());
             trii.put("messages", messages);
         } catch (JSONException e) {
@@ -63,5 +64,24 @@ public class TriiServlet extends HttpServlet {
         Trii trii = Trii.createTrii(name);
         Group group = OfyService.getGroup(groupId);
         group.addTrii(trii);
+        
+
+        JSONObject newTrii = new JSONObject();
+        JSONArray messages = new JSONArray();
+        
+        Set<Message> messageSet = trii.getMessages();
+
+        for(Message m : messageSet)
+            messages.put(m.getId());
+
+        try {
+        	newTrii.put("id", trii.getId());
+            newTrii.put("name", trii.getName());
+            newTrii.put("messages", messages);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        resp.getWriter().println(newTrii);
     }
 }

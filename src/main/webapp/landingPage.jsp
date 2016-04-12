@@ -15,14 +15,17 @@
 <head>
     <title>Home</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	 <link rel="stylesheet" href="stylesheets/popup.css">
 </head>
 <body>
+
 <%
 
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
     if(user != null){
 %>
+
 <div id="title">
     <div>Trii Chat</div>
     <div>Welcome, <%= user.getNickname() %></div>
@@ -32,61 +35,36 @@
     	if(triiUser != null){
 %>
 
-<div id="group-list-section">
-    <h2>Groups</h2>
-    <input type="button" id="create-group-button" value="Create Group">
-    <ul id="group-list"></ul>
-    <p id="group-list-error"></p>
-</div>
 
-<div id="group-view">
-    <h2 id="group-name">---</h2>
-    <h3>Members</h3>
-    <input type="button" id="add-user-to-group-button" value="Add Someone" disabled>
-    <ul id="user-list"></ul>
-    <h3>Triis</h3>
-    <input type="button" id="create-trii-button" value="New Trii" disabled>
-    <ul id="trii-list"></ul>
-    <p id="group-error"></p>
-</div>
+<%@ include file="groupPart.jsp" %>
 
-<div id="trii-view">
-    <h2 id="trii-name">---</h2>
-    <table id="message-table"></table>
-    <p id="trii-error"></p>
-    <form id="message-send-form">
-        <input type="text" id="message-textbox" disabled>
-        <input type="submit" id="message-send-button" value="Send" disabled>
-    </form>
-</div>
+<%@ include file="memberPart.jsp" %>
+
+<%@ include file="triiPart.jsp" %>
 
 <script>
+
+// references to some elements
+var messageTableElem = $('#message-table');
+var messageTextboxElem = $('#message-textbox');
+var messageSendButtonElem = $('#message-send-button');
+
+var userListElem = $('#user-list');
+var addUserToGroupButtonElem = $('#add-user-to-group-button');
+
+// variables for current selections
+var selectedGroupID = undefined;
+var selectedTriiID = undefined;
+
 $(document).ready(function () {
 
-    // references to some elements
-    var createGroupButtonElem = $('#create-group-button');
-    var groupListElem = $('#group-list');
-    var groupListErrorElem = $('#group-list-error');
-    var addUserToGroupButtonElem = $('#add-user-to-group-button');
-    var userListElem = $('#user-list');
-    var createTriiButtonElem = $('#create-trii-button');
-    var triiListElem = $('#trii-list');
-    var groupErrorElem = $('#group-error');
-    var messageTableElem = $('#message-table');
-    var messageTextboxElem = $('#message-textbox');
-    var messageSendButtonElem = $('#message-send-button');
-    var triiErrorElem = $('#trii-error');
-
-    // variables for current selections
-    var selectedGroupID = undefined;
-    var selectedTriiID = undefined;
 	
 	// request the list of groups from the server
 	$.getJSON('/me', function (me) {
 		
 		// populate the group list <ul> element
-		groupListElem.empty();
-        groupListErrorElem.empty();
+	 	groupListElem.empty();
+		groupListErrorElem.empty();
 
         // iterate through list of groupIDs
         var groups = me['groups'];
@@ -96,18 +74,7 @@ $(document).ready(function () {
 
             // request this group's name
 			$.getJSON('/group', {id: groupID}, (function (groupID, group) {
-
-                // create the <li> element containing this group's name
-                var liElem = $('<li>');
-                liElem.text(group['name']);
-                liElem.data('group-id', groupID); // associate the group id with the element
-
-                // when the <li> element is clicked...
-                liElem.click(function (e) {
-                    clickedGroup(groupID);
-                });
-
-                groupListElem.append(liElem);
+				addGroup(group);
             }).bind(undefined, groupID)).fail(function () {
                 // TODO: display an error message
             });
@@ -118,163 +85,10 @@ $(document).ready(function () {
 		groupListErrorElem.text('[failed to get group list]');
 	});
 
-    function clickedGroup(groupID) {
-        // get group info
-        $.getJSON('/group', {id: groupID}, function (group) {
-
-            selectedGroupID = groupID;
-
-            $('#group-name').text(group['name']);
-            $('#trii-name').text('---');
-
-            // enable the buttons
-            addUserToGroupButtonElem.prop('disabled', false);
-            createTriiButtonElem.prop('disabled', false);
-            // disable the message form inputs
-            messageTextboxElem.prop('disabled', true);
-            messageSendButtonElem.prop('disabled', true);
-
-            userListElem.empty();
-            triiListElem.empty();
-            groupErrorElem.empty();
-
-            // iterate through list of users in group
-            var members = group['members'];
-            for (var i = 0; i < members.length; i++) {
-                var userID = members[i];
-
-                // get this user's name
-                $.getJSON('/user', {id: userID}, function (user) {
-                    var liElem = $('<li>');
-                    liElem.text(user['name']);
-                    userListElem.append(liElem);
-                });
-            }
-
-            // iterate through list of triis
-            var triis = group['triis'];
-            for (var i = 0; i < triis.length; i++) {
-                var triiID = triis[i];
-
-                // get this trii's name
-                $.getJSON('/trii', {id: triiID}, (function (triiID, trii) {
-                    var liElem = $('<li>');
-                    liElem.text(trii['name']);
-                    liElem.data('trii-id', triiID);
-
-                    // when the <li> element is clicked...
-                    liElem.click(function (e) {
-                        clickedTrii(triiID);
-                    });
-
-                    triiListElem.append(liElem);
-                }).bind(undefined, triiID));
-            }
-        }).fail(function () {
-            // display an error message
-            triiListElem.empty();
-            groupErrorElem.text('[failed to get group]');
-        });
-    }
-
-    function clickedTrii(triiID) {
-        // get trii info
-        $.getJSON('/trii', {id: triiID}, function (trii) {
-
-            selectedTriiID = triiID;
-
-            $('#trii-name').text(trii['name']);
-
-            messageTableElem.empty();
-
-            // iterate through list of messages
-            var messages = trii['messages'];
-            for (var i = 0; i < messages.length; i++) {
-                var messageID = messages[i];
-
-                // get this messages's author and body
-                $.getJSON('/message', {id: messageID}, (function (messageID, message) {
-
-                    var trElem = $('<tr>');
-                    var td1Elem = $('<td>');
-                    var td2Elem = $('<td>');
-
-                    td1Elem.text(message['author']);
-                    td2Elem.text(message['body']);
-                    trElem.append(td1Elem, td2Elem);
-
-                    messageTableElem.append(trElem);
-
-                }).bind(undefined, messageID));
-            }
-
-            // enable the message form inputs
-            messageTextboxElem.prop('disabled', false);
-            messageSendButtonElem.prop('disabled', false);
-
-        }).fail(function () {
-            // display an error message
-            triiListElem.empty();
-            triiErrorElem.text('[failed to get trii]');
-        });
-    }
-
-    $('#message-send-form').submit(function (e) {
-
-        if (selectedTriiID !== undefined) {
-            $.post('/message', {
-                body: messageTextboxElem.val(),
-                trii_id: selectedTriiID
-            });
-
-            messageTextboxElem.val("");
-        }
-
-        // return false to prevent refresh
-        return false;
-    });
-
-    createGroupButtonElem.click(function (e) {
-
-        var newGroupName = window.prompt("Enter name of new group:");
-        if (newGroupName != null) {
-            $.post('/group', {
-                name: newGroupName
-            });
-        }
-    });
-
-    addUserToGroupButtonElem.click(function (e) {
-
-        var newUserName = window.prompt("Who do you want to add to this group?");
-
-        // search for any users with this name
-        $.getJSON('/username-search', {name: newUserName}, function (searchResults) {
-            var users = searchResults['users'];
-            // TODO: in case of multiple results allow the user to actually choose a user somehow, instead of random choice
-            if (users.length > 0) {
-                // randomly choose a user
-                var userID = users[Math.floor(Math.random() * users.length)];
-                $.get('/add-user-to-group', {user: userID, group: selectedGroupID});
-            } else {
-                window.alert("There is no user with the name " + newUserName);
-            }
-        });
-    });
-
-    createTriiButtonElem.click(function (e) {
-
-        var newTriiName = window.prompt("Enter name of new trii:");
-
-        if (newTriiName != null) {
-            // create the trii
-            $.post('/trii', {
-                name: newTriiName,
-                group: selectedGroupID
-            });
-        }
-    });
+    
 });
+
+
 </script>
 
 <%

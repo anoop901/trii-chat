@@ -30,6 +30,7 @@ public class MessageServlet extends HttpServlet {
 
         // TODO: test this also does it want author id? or name?
         try {
+        	message.put("id", messageID);
             message.put("author", triiMessage.getAuthor().getId());
             message.put("body", triiMessage.getContent());
         } catch (JSONException e) {
@@ -57,9 +58,20 @@ public class MessageServlet extends HttpServlet {
         Message recent = getMostRecent(trii);
         if(recent != null){parents.add(recent);}
         // Create message
-        Message.createMessage(messageBody, parents, user,trii);
+        Message newMessage = Message.createMessage(messageBody, parents, user,trii);
         // TODO: notify any users who are listening to this trii
         System.out.println("trii: " + triiID + ", message: " + messageBody);
+        
+        JSONObject message = new JSONObject();
+        try {
+        	message.put("id", newMessage.getId());
+            message.put("author", newMessage.getAuthor().getId());
+            message.put("body", newMessage.getContent());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        response.getWriter().println(message);
     }
 
     private Message getMostRecent(Trii trii){

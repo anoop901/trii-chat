@@ -44,6 +44,7 @@ public class GroupServlet extends HttpServlet {
             members.put(u.getId());
 
         try {
+        	group.put("id", groupID);
             group.put("name", currentGroup.getName());
             group.put("triis", triis);
             group.put("members", members);
@@ -64,7 +65,15 @@ public class GroupServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getParameter("name");
+    	String command = req.getPathInfo();
+    	if(command != null){
+	    	if(command.equals("/delete")){
+	    		long groupID = Long.parseLong(req.getParameter("id"));
+	            OfyService.deleteGroup(groupID);
+	    		return;
+	    	}
+    	}
+    	String name = req.getParameter("name");
         if(name == null){
             //TODO: Error Message because no "name" parameter in request
             return;
@@ -79,8 +88,34 @@ public class GroupServlet extends HttpServlet {
         }
         Set<User> users = new HashSet<User>();
         users.add(user);
-        Group.createGroup(name,users,null);
+        Group currentGroup = Group.createGroup(name,users,null);
 
-        // TODO: notify the user
+        // TODO: notify the userGroup currentGroup = OfyService.getGroup(groupID);
+
+        JSONObject group = new JSONObject();
+        JSONArray triis = new JSONArray();
+        JSONArray members = new JSONArray();
+
+        // TODO: test this code
+        // populate the JSON with values from the datastore. the following lines are placeholder
+        Set<Trii> triiSet = currentGroup.getTriis();
+        Set<User> userSet = currentGroup.getUsers();
+
+        for (Trii t : triiSet)
+            triis.put(t.getId());
+
+        for (User u : userSet)
+            members.put(u.getId());
+
+        try {
+        	group.put("id", currentGroup.getId());
+            group.put("name", currentGroup.getName());
+            group.put("triis", triis);
+            group.put("members", members);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        resp.getWriter().println(group);
     }
 }

@@ -91,6 +91,11 @@ public class OfyService {
         return ofy().load().type(Group.class).id(id).now();
     }
 
+    public static void deleteGroup(Long id) {
+    	// TODO: properly remove all dependencies from datastore
+    }
+    
+    // TODO: add delete methods for all classes
 
     public static Message getMessage(Long id){
         return ofy().load().type(Message.class).id(id).now();

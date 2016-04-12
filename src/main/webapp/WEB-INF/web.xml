@@ -38,10 +38,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <servlet-name>UserNameSearchServlet</servlet-name>
         <servlet-class>triichat.servlet.UserNameSearchServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>AddUserToGroupServlet</servlet-name>
-        <servlet-class>triichat.servlet.AddUserToGroupServlet</servlet-class>
-    </servlet>
 
     <servlet-mapping>
         <servlet-name>Me</servlet-name>
@@ -49,7 +45,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Group</servlet-name>
-        <url-pattern>/group</url-pattern>
+        <url-pattern>/group/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Trii</servlet-name>
@@ -62,14 +58,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-mapping>
         <servlet-name>User</servlet-name>
         <url-pattern>/user</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AddUserToGroupServlet</servlet-name>
-        <url-pattern>/add-user-to-group</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>UserNameSearchServlet</servlet-name>
-        <url-pattern>/username-search</url-pattern>
     </servlet-mapping>
 	
 	<welcome-file-list>
