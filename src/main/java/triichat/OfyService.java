@@ -113,7 +113,7 @@ public class OfyService {
     }
 
     /**
-     * Deletes message
+     * Deletes message, but needs trii that it belongs to
      * @param id
      */
     public static void deleteMessage(Long id, Long triiId){
@@ -142,7 +142,6 @@ public class OfyService {
     }
 
     public static void deleteUser(String id){
-        //TODO: Remove refrence to User from groups that include it
         User user = OfyService.getUser(id);
         for(Group g : user.getGroups()){
             g.removeUser(user.getId());
