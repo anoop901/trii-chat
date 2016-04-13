@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -109,6 +110,16 @@ public class Group {
     
     public Long getId(){
     	return this.id;
+    }
+
+    public void removeTrii(Long id){
+        Ref<Trii> ref = Ref.create(Key.create(Trii.class,id));
+        this.triis.remove(ref);
+    }
+
+    public void removeUser(String id){
+        Ref<User> ref = Ref.create(Key.create(User.class,id));
+        this.users.remove(ref);
     }
 
 }

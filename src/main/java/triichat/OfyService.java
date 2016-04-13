@@ -61,12 +61,9 @@ public class OfyService {
      * @return true if successful save
      */
     public static boolean save(Object entity){
-    	try{
-    		OfyService.ofy().save().entity(entity).now();
-    		return true;
-    	}catch(Exception e){
-    		return false;
-    	}
+        OfyService.ofy().save().entity(entity).now();
+        if(OfyService.ofy().load().entity(entity).now() != null) return true;
+        else return false;
     }
    
     /**
@@ -91,12 +88,6 @@ public class OfyService {
         return ofy().load().type(Group.class).id(id).now();
     }
 
-    public static void deleteGroup(Long id) {
-    	// TODO: properly remove all dependencies from datastore
-    }
-    
-    // TODO: add delete methods for all classes
-
     public static Message getMessage(Long id){
         return ofy().load().type(Message.class).id(id).now();
     }
@@ -108,5 +99,55 @@ public class OfyService {
     public static User getUser(String id){
         return ofy().load().type(User.class).id(id).now();
     }
-    
+
+    public static void deleteGroup(Long id) {
+        // TODO: Remove references to this group from users in it
+        Group group = getGroup(id);
+        //don't delete users that are part of this group
+        //delete triis
+        for(Trii t : group.getTriis()){
+            OfyService.deleteTrii(t.getId(),id);
+        }
+
+        OfyService.ofy().delete().type(Group.class).id(id).now();
+    }
+
+    /**
+     * Deletes message
+     * @param id
+     */
+    public static void deleteMessage(Long id, Long triiId){
+        //TODO: Remove refernce to this message from parents and replies
+
+        OfyService.ofy().delete().type(Message.class).id(id).now();
+    }
+
+    /**
+     * Deletes given trii and all messages inside it
+     * @param id
+     * @param groupID - Group that trii belongs to
+     */
+    public static void deleteTrii(Long id, Long groupID){
+        //delete all messages in trii
+        Trii trii = OfyService.getTrii(id);
+        for(Message m : trii.getMessages()){
+            OfyService.deleteMessage(m.getId(),id);
+        }
+        //Remove reference to trii from group that includes it
+        //search all groups for ref to this trii
+        Group group = OfyService.getGroup(groupID);
+        group.removeTrii(id);
+        //delete trii from datastore
+        OfyService.ofy().delete().type(Trii.class).id(id).now();
+    }
+
+    public static void deleteUser(String id){
+        //TODO: Remove refrence to User from groups that include it
+        User user = OfyService.getUser(id);
+        for(Group g : user.getGroups()){
+            g.removeUser(user.getId());
+        }
+        OfyService.ofy().delete().type(User.class).id(id).now();
+    }
+
 }
