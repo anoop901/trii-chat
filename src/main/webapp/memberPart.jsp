@@ -4,6 +4,7 @@
 <%@ page import="com.google.appengine.api.datastore.*" %>
 <%@ page import="triichat.OfyService" %>
 
+<div class="member">
 <script>
  	//references to elements
  	var userListElem = $('#user-list');
@@ -22,41 +23,41 @@
 		</form>
       </div>
     </div>
+    
+    <script>
+		// Attach a submit handler to the form
+		$( "#addMemberForm" ).submit(function( event ) {
+		 
+		  // Stop form from submitting normally
+		  event.preventDefault();
+		 
+		  // Get some values from elements on the page
+		  var $form = $( this ),
+		    username = $form.find( "input[name='name']" ).val();
+		  
+		  //search for any users with this name
+		  $.getJSON('/username-search', {name: username}, function (searchResults) {
+		      var users = searchResults['users'];
+		      // TODO: in case of multiple results allow the user to actually choose a user somehow, instead of random choice
+		      if (users.length > 0) {
+		          // randomly choose a user
+		          var userID = users[Math.floor(Math.random() * users.length)];
+		          $.get('/add-user-to-group', {user: userID, group: selectedGroupID});
+		      } else {
+		          window.alert("There is no user with the name " + username);
+		      }
+		  });
+		  // Send the data using post
+		  var posting = $.post( url, data );
+		 
+		  // Put the results in a div
+		  posting.done(function( user ) {
+			  addMember(user);
+			  $('#addMember').removeClass('visible');
+		  });
+		});
+	</script> 
 </div>
-
- <script>
-// Attach a submit handler to the form
-$( "#addMemberForm" ).submit(function( event ) {
- 
-  // Stop form from submitting normally
-  event.preventDefault();
- 
-  // Get some values from elements on the page
-  var $form = $( this ),
-    username = $form.find( "input[name='name']" ).val();
-  
-  //search for any users with this name
-  $.getJSON('/username-search', {name: username}, function (searchResults) {
-      var users = searchResults['users'];
-      // TODO: in case of multiple results allow the user to actually choose a user somehow, instead of random choice
-      if (users.length > 0) {
-          // randomly choose a user
-          var userID = users[Math.floor(Math.random() * users.length)];
-          $.get('/add-user-to-group', {user: userID, group: selectedGroupID});
-      } else {
-          window.alert("There is no user with the name " + username);
-      }
-  });
-  // Send the data using post
-  var posting = $.post( url, data );
- 
-  // Put the results in a div
-  posting.done(function( user ) {
-	  addMember(user);
-	  $('#addMember').removeClass('visible');
-  });
-});
-</script> 
 
 <script>
 function addMember(user){
@@ -65,3 +66,4 @@ function addMember(user){
     $('#user-list').append(liElem);
 }
 </script>
+</div>

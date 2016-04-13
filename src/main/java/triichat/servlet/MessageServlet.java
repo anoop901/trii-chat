@@ -62,7 +62,7 @@ public class MessageServlet extends HttpServlet {
         // Create message
         Message newMessage = Message.createMessage(messageBody, parents, user,trii);
         for(Message p : parents){
-            p.addReply(newMessage);
+        	p.addReply(newMessage);
         }
         // TODO: notify any users who are listening to this trii
         System.out.println("trii: " + triiID + ", message: " + messageBody);

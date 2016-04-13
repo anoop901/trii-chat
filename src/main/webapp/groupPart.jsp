@@ -4,63 +4,60 @@
 <%@ page import="com.google.appengine.api.datastore.*" %>
 <%@ page import="triichat.OfyService" %>
 
+<div class="group">
 <script>
  	//references to some elements
  	var createGroupButtonElem = $('#createGroup');
  	var groupListElem = $('#group-list');
- 	var groupErrorElem = $('#group-error');
  	var groupListErrorElem = $('#group-list-error');
+ 	var groupErrorElem = $('#group-error');
 </script>
 
-<div id="group-list-section">
+<div id="group-section" class="group-selection">
     <h2 id="group-header" onclick="clearGroupSelection();">Groups</h2>
-    <a class="button" onclick="$('#createGroup').addClass('visible');event.stopPropagation();" id="create-group-button">Create Group</a>
-    <ul id="group-list"></ul>
+    <button onclick="$('#createGroup').addClass('visible');event.stopPropagation();" id="create-group-button">Create Group</button>
+    <ul id="group-list" class="group-list"></ul>
     <p id="group-list-error"></p>
+    
+    <div id="createGroup" class="overlay">
+	    <div class="popup">
+	      <h2>Create a new Group</h2>
+	      <a class="close" onclick="$('#createGroup').removeClass('visible');">&times;</a>
+	      <div class="content">
+	      	<form action="/group" id="createGroupForm">
+			  <label for="name">Group Name:</label>
+			  <input type="text" name="name" placeholder="NewGroup" required><br>
+			  <input type="submit" value="Create Group">
+			</form>
+	      </div>
+	    </div>
+	    
+	    <script>
+			// Attach a submit handler to the form
+			$( "#createGroupForm" ).submit(function( event ) {
+			  // Stop form from submitting normally
+			  event.preventDefault();
+			  // Get some values from elements on the page:
+			  var $form = $( this ),
+			    url = $form.attr( "action" );
+			  // Get data from form
+			  var data = $( this ).serializeArray();
+			  // Send the data using post
+			  var posting = $.post( url, data, function( group ) {
+				  addGroup(group);
+				  $('#createGroup').removeClass('visible');
+			  }, "json");
+			});
+		</script>
+	</div>
 </div>
 
-<div id="createGroup" class="overlay">
-    <div class="popup">
-      <h2>Create a new Group</h2>
-      <a class="close" onclick="$('#createGroup').removeClass('visible');">&times;</a>
-      <div class="content">
-      	<form action="/group" id="createGroupForm">
-		  <label for="name">Group Name:</label>
-		  <input type="text" name="name" placeholder="NewGroup" required><br>
-		  <input type="submit" value="Create Group">
-		</form>
-      </div>
-    </div>
-</div>
-
-<script>
-// Attach a submit handler to the form
-$( "#createGroupForm" ).submit(function( event ) {
- 
-  // Stop form from submitting normally
-  event.preventDefault();
- 
-  // Get some values from elements on the page:
-  var $form = $( this ),
-    url = $form.attr( "action" );
-
-  // Get data from form
-  var data = $( this ).serializeArray();
-  
-  // Send the data using post
-  var posting = $.post( url, data, function( group ) {
-	  addGroup(group);
-	  $('#createGroup').removeClass('visible');
-  }, "json");
-});
-</script>
-
-<div id="group-view">
+<div id="selected-group" class="group-details">
     <h2 id="group-name">---</h2>
-    <div id="group-members"></div>
-    <div id="group-triis"></div>
+    <div id="group-triis" class="trii-list"></div>
+    <div id="group-members" class="member-list"></div>
+    <p id="group-error"></p>
 </div> 
-
 
 <script>
 $(document).ready(function () {
@@ -87,9 +84,11 @@ function addGroup(group){
 	// create the <li> element containing this group's name
     var liElem = $('<li>');
 	var name = $("<h3>", {text: group['name']});
-    liElem.data('group-id', group['id']); // associate the group id with the element
-	
-	var remove = $("<p>", {text: "Delete"});
+	// when the <li> element is clicked...
+    name.click(function (e) {
+        clickedGroup(group['id']);
+    });
+	var remove = $("<button>", {text: "Delete"});
 	remove.click(function (e){
 		var posting = $.post( '/group/delete', {id: group['id']} );
   		posting.done(function() {
@@ -99,13 +98,9 @@ function addGroup(group){
   			}
   	  	});
 	});
-	liElem.append( name, remove );
-    
-    // when the <li> element is clicked...
-    name.click(function (e) {
-        clickedGroup(group['id']);
-    });
-
+	liElem.append( remove, name );
+    liElem.data('group-id', group['id']); // associate the group id with the element
+      
     $("#group-list").append(liElem);
 }
 
@@ -119,25 +114,25 @@ function clickedGroup(groupID) {
             selectedTriiID = undefined;
 
             $('#group-name').text(group['name']);
+            $('#group-triis').empty();
+            $('#group-members').empty();
+
             $('#trii-name').text('---');
             triiMessagesElem.empty();
-
-            $('#group-members').empty();
-            $('#group-triis').empty();
 
             userListElem.empty();
             groupErrorElem.empty();
             
          	// Create Member View
     	    var title = "<h3>Members</h3>";
-    	    var button = $("<a>", {id:"add-user-to-group-button", class:"button", onclick:"$('#addMember').addClass('visible');event.stopPropagation();", text:"Add Someone"});
+    	    var button = $("<button>", {id:"add-user-to-group-button", onclick:"$('#addMember').addClass('visible');event.stopPropagation();", text:"Add Someone"});
     	    var ul = $("<ul>", {id:"user-list"});
             $('#group-members').append( title, button, ul );
             
             // Create Trii View
     	    var title = "<h3 onclick='clearTriiSelection();'>Triis</h3>";
-    	    var button = $("<a>", {id:"create-trii-button", class:"button",  onclick:"$('#createTrii').addClass('visible');event.stopPropagation();", text:"New Trii"});
-    	    var ul = $("<ul>", {id:"trii-list"});
+    	    var button = $("<button>", {id:"create-trii-button",  onclick:"$('#createTrii').addClass('visible');event.stopPropagation();", text:"New Trii"});
+    	    var ul = $("<ul>", {id:"trii-list", class:"trii-list"});
     	    var error = $("<p>", {id:"group-error"});
             $('#group-triis').append( title, button, ul, error );
             
@@ -180,10 +175,11 @@ function clearGroupSelection(){
 	selectedGroupID = undefined;
 	selectedTriiID = undefined;
 	$('#group-name').text('---');
-    $('#trii-name').text('');
-    triiMessagesElem.empty();
     $('#group-members').empty();
     $('#group-triis').empty();
+    $('#trii-name').text('');
+    triiMessagesElem.empty();
 }
 
 </script>
+</div>

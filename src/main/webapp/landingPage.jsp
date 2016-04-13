@@ -16,6 +16,7 @@
     <title>Home</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	 <link rel="stylesheet" href="stylesheets/popup.css">
+	 <link rel="stylesheet" href="stylesheets/layout.css">
 </head>
 <body>
 
@@ -35,12 +36,13 @@
     	if(triiUser != null){
 %>
 
-
-<%@ include file="groupPart.jsp" %>
-
-<%@ include file="memberPart.jsp" %>
-
-<%@ include file="triiPart.jsp" %>
+<div class="container clearfix">
+	<%@ include file="groupPart.jsp" %>
+	
+	<%@ include file="memberPart.jsp" %>
+	
+	<%@ include file="triiPart.jsp" %>
+</div>
 
 <script>
 
@@ -58,7 +60,6 @@ var selectedTriiID = undefined;
 
 $(document).ready(function () {
 
-	
 	// request the list of groups from the server
 	$.getJSON('/me', function (me) {
 		

@@ -4,6 +4,7 @@
 <%@ page import="com.google.appengine.api.datastore.*" %>
 <%@ page import="triichat.OfyService" %>
 
+<div class="trii">
 <script>
  	//references to elements
 	var createTriiButtonElem = $('#createTrii');
@@ -12,9 +13,11 @@
 	var triiErrorElem = $('#trii-error');
 </script>
  	
-<div id="trii-view">
-    <h2 id="trii-name"></h2>
-    <div id="trii-messages"></div>
+<div id="trii-view" class="trii-view">
+	<div class="trii-header">
+    	<h2 id="trii-name"></h2>
+	</div>
+    <div id="trii-messages" class="trii-messages"></div>
     <p id="trii-error"></p>
 </div>
 
@@ -30,39 +33,50 @@
 		</form>
       </div>
     </div>
+    
+    <script>
+		// Attach a submit handler to the form
+		$( "#createTriiForm" ).submit(function( event ) {
+		  event.preventDefault();
+		  var $form = $( this ),
+		    url = $form.attr( "action" );
+		  
+		  // Get data from form
+		  var data = $( this ).serializeArray();
+		  data.push({name: 'group', value: selectedGroupID});
+		  
+		  // Send the data using post
+		  var posting = $.post( url, data, function( trii ) {
+			  addTrii(trii);
+			  $('#createTrii').removeClass('visible');
+		  }, "json");
+		});
+	</script>    
 </div>
-
-<script>
-// Attach a submit handler to the form
-$( "#createTriiForm" ).submit(function( event ) {
-  event.preventDefault();
-  var $form = $( this ),
-    url = $form.attr( "action" );
-  
-  // Get data from form
-  var data = $( this ).serializeArray();
-  data.push({name: 'group', value: selectedGroupID});
-  
-  // Send the data using post
-  var posting = $.post( url, data, function( trii ) {
-	  addTrii(trii);
-	  $('#createTrii').removeClass('visible');
-  }, "json");
-});
-</script>
 
 <script>
 
 function addTrii(trii){
-	var liElem = $('<li>');
-    liElem.text(trii['name']);
-    liElem.data('trii-id', trii['id']);
-
-    // when the <li> element is clicked...
-    liElem.click(function (e) {
+ 	// create the <li> element containing this trii's name
+    var liElem = $('<li>');
+	var name = $("<h3>", {text: trii['name']});
+	// when the <li> element is clicked...
+    name.click(function (e) {
         clickedTrii(trii['id']);
     });
-
+	var remove = $("<button>", {text: "Delete"});
+	remove.click(function (e){
+		var posting = $.post( '/trii/delete', {id: trii['id']} );
+  		posting.done(function() {
+  			liElem.remove();
+  			if(trii['id'] == selectedTriiID){
+  				clearTriiSelection();
+  			}
+  	  	});
+	});
+	liElem.append( remove, name );
+    liElem.data('trii-id', trii['id']); // associate the trii id with the element
+      
     triiListElem.append(liElem);
 }
 
@@ -78,9 +92,9 @@ function clickedTrii(triiID) {
 	        triiMessagesElem.empty();
 	        
 	     	// Create Message Table
-    	    var table = $("<table>", {id:"message-table"});
-    	    var form = $("<form>", {id:"message-send-form"});
-    	    var textbox = $("<input>", {id:"message-textbox", type:"text"});
+    	    var table = $("<ul>", {id:"message-table"});
+    	    var form = $("<form>", {id:"message-send-form", class:"create-message"});
+    	    var textbox = $("<textarea>", {id:"message-textbox"});
     	    var submit = $("<input>", {id:"message-send-button", type:"submit", value: "Send"});
     	    form.append( textbox, submit );
     	    form.submit(function(e){
@@ -121,14 +135,17 @@ function clearTriiSelection(){
 }
 
 function addMessage(message){
-	var trElem = $('<tr>');
-    var td1Elem = $('<td>');
-    var td2Elem = $('<td>');
+	var liElem = $('<li>');
+    var dataElem = $('<div>', {class:"message-data"});
+    var authorElem = $('<div>', {class:"message-data-name"});
+    var contentElem = $('<div>', {class:"message my-message"});
 
-    td1Elem.text(message['author']);
-    td2Elem.text(message['body']);
-    trElem.append(td1Elem, td2Elem);
+    authorElem.text(message['author']);
+    contentElem.text(message['body']);
+    dataElem.append(authorElem);
+    liElem.append(dataElem, contentElem);
 
-    $('#message-table').append(trElem);
+    $('#message-table').append(liElem);
 }
 </script>
+</div>

@@ -70,7 +70,7 @@ public class GroupServlet extends HttpServlet {
     	if(command != null){
 	    	if(command.equals("/delete")){
 	    		long groupID = Long.parseLong(req.getParameter("id"));
-	            OfyService.deleteGroup(groupID);
+	            //OfyService.deleteGroup(groupID);
 	    		return;
 	    	}
     	}
