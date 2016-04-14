@@ -41,8 +41,6 @@
 <div class="container clearfix">
 	<%@ include file="groupPart.jsp" %>
 	
-	<%@ include file="memberPart.jsp" %>
-	
 	<%@ include file="triiPart.jsp" %>
 </div>
 </main>

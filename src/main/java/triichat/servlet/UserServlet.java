@@ -3,6 +3,7 @@ package triichat.servlet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import triichat.OfyService;
 import triichat.User;
 
@@ -10,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Set;
 
@@ -18,12 +20,22 @@ import java.util.Set;
  */
 public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO: test this code
+    	// TODO: test this code
         // {"name" : String
         // "contacts": [UserID, ...]}
 
         String userID = request.getParameter("id");
         User currentUser = OfyService.getUser(userID);
+        
+        response.setContentType("application/html");
+    	String command = request.getPathInfo();
+    	if(command != null){
+    		switch(command){
+    		case "/edit":
+    			break;
+    		}
+	    	return;	
+    	}
 
         response.setContentType("application/json");
         JSONObject user = new JSONObject();

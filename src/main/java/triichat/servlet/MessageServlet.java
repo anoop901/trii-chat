@@ -3,9 +3,11 @@ package triichat.servlet;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import triichat.Message;
 import triichat.OfyService;
 import triichat.Trii;
@@ -14,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,7 +47,20 @@ public class MessageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    	response.setContentType("application/html");
+		String command = request.getPathInfo();
+		if(command != null){
+    		long messageID = Long.parseLong(request.getParameter("id"));
+    		switch(command){
+    		case "/delete":
+	            //OfyService.deleteMessage(messageID);
+    			break;
+    		case "/edit":
+    			break;
+    		}
+	    	return;	
+    	}
+    	
         String messageBody = request.getParameter("body");
         Long triiID = Long.parseLong(request.getParameter("trii_id"));
         UserService userService = UserServiceFactory.getUserService();
