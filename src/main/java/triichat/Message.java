@@ -21,32 +21,45 @@ public class Message {
     @Load private Set<Ref<Message>> parents;
     @Load private Set<Ref<Message>> replies;
     private Date timestamp;
-	private Key<User> author;
-	private Key<Trii> holder; //Trii that holds this message
+	@Load private Key<User> author;
+	@Load private Key<Trii> holder; //Trii that holds this message
 
-    private Message(){}
+    private Message(){
+		this.content = null;
+		this.parents = new HashSet<>();
+		this.replies = new HashSet<>();
+		this.timestamp = null;
+		this.author = null;
+		this.holder = null;
+	}
     
     /**
      * Creates and saves message to datastore and associated trii
      * @param content
-     * @param parents
+     * @param parents, this set can be empty but cannot be null
+	 * @param author
+	 * @param trii
      */
     public static Message createMessage(String content, Set<Message> parents, User author, Trii trii){
-		if(parents == null || author == null || content == null || trii == null) throw new IllegalArgumentException();
+		if(parents == null || author == null || content == null || trii == null) throw new IllegalArgumentException("\nWhy did you pass null arguments?\n");
     	Message retval = new Message(content,parents,author,trii);
-		OfyService.save(retval);
 		trii.addMessage(retval);
+		OfyService.save(retval);
 		return retval;
     }
     
     private Message(String content, Set<Message> parents,User author,Trii trii ){
     	this.content = content;
     	this.parents = new HashSet<Ref<Message>>();
-    	for(Message p : parents){
-    		Key<Message> k = Key.create(p);
-    		Ref<Message> r = Ref.create(k);
-    		this.parents.add(r);
-    	}
+		if(!parents.isEmpty()) {
+			for (Message p : parents) {
+				if (p != null) {
+					Key<Message> k = Key.create(p);
+					Ref<Message> r = Ref.create(k);
+					this.parents.add(r);
+				}
+			}
+		}
     	this.replies = new HashSet<Ref<Message>>();
     	this.timestamp = new Date();
 		this.author = Key.create(author);
@@ -67,6 +80,7 @@ public class Message {
 
 	public Set<Message> getParents() {
 		Set<Message> retval = new HashSet<Message>();
+		if(this.parents == null) this.replies = new HashSet<Ref<Message>>();
 		for(Ref<Message> r : this.parents){
 			retval.add(r.get());
 		}
@@ -74,6 +88,7 @@ public class Message {
 	}
 	public Set<Message> getReplies() {
 		Set<Message> retval = new HashSet<Message>();
+		if(this.replies == null) this.replies = new HashSet<Ref<Message>>();
 		for(Ref<Message> r : this.replies){
 			retval.add(r.get());
 		}
@@ -84,12 +99,14 @@ public class Message {
 	}
 	
 	public void addReply(Message reply){
+		if(this.replies == null) this.replies = new HashSet<Ref<Message>>();
 		this.replies.add(Ref.create(reply));
         OfyService.save(this);
 		
 	}
     
 	public void addParent(Message parent){
+		if(this.parents == null) this.replies = new HashSet<Ref<Message>>();
 		this.parents.add(Ref.create(parent));
         OfyService.save(this);
 		
