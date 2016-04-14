@@ -16,24 +16,37 @@ public class Trii {
     String name;
     @Load Ref<Message> root;
     @Load Set<Ref<Message>> all;
-    private Trii(){}
+    @Load Ref<Group> group; //that this trii is part of
+
+    private Trii(){
+        this.name = null;
+        this.group = null;
+        this.all = new HashSet<Ref<Message>>();
+        this.root = null;
+    }
     
     /**
      * Creates and saves Trii in datastore. Can use null firstMessage to create empty trii.
      * @param name
+     * @param group
      *
      */
-    public static Trii createTrii(String name){
-    	return new Trii(name);
+    public static Trii createTrii(String name, Group group){
+    	return new Trii(name, group);
     }
-    private Trii(String name)
+    private Trii(String name, Group group)
     {
         this.name = name;
         this.all = new HashSet<Ref<Message>>();
         this.root = null;
+        this.group = Ref.create(Key.create(Group.class, group.getId()));
         OfyService.save(this);
     }
 
+    public Group getGroup(){
+        if(this.group == null){return null;}
+        else{return this.group.get();}
+    }
 
     public Message getRoot()
     {
