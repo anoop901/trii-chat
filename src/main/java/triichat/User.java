@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.Result;
 import com.googlecode.objectify.annotation.Entity;
@@ -48,6 +51,24 @@ public class User {
         OfyService.save(made);
         return made;
     }
+
+	/**
+	 * Creates a user out of the google account user that's logged in currently.
+	 * If the triichat user already exists, returns that
+	 * @param name
+	 * @return null if no google account is logged in.
+     */
+	public static User createUser(String name){
+		UserService userService = UserServiceFactory.getUserService();
+		com.google.appengine.api.users.User gUser = userService.getCurrentUser();
+		if(gUser == null){return null;}
+		triichat.User user = triichat.User.findUser(gUser);
+		if(user == null){
+			user = triichat.User.createUser(gUser);
+		}
+		user.setName(name);
+		return user;
+	}
     
     public void setName(String name){
     	this.name = name;
@@ -97,6 +118,12 @@ public class User {
 	public void addContact(User contact){
 		this.contacts.add(Ref.create(contact));
         OfyService.save(this);
+	}
+
+	public void removeGroup(Group group){
+		Ref<Group> groupRef = Ref.create(Key.create(Group.class,group.getId()));
+		if(this.groups != null) this.groups.remove(groupRef);
+		OfyService.save(this);
 	}
 	
 	/**

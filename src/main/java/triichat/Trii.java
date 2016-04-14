@@ -32,7 +32,9 @@ public class Trii {
      *
      */
     public static Trii createTrii(String name, Group group){
-    	return new Trii(name, group);
+    	Trii retval =  new Trii(name, group);
+        group.addTrii(retval);
+        return retval;
     }
     private Trii(String name, Group group)
     {

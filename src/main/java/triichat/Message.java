@@ -41,8 +41,12 @@ public class Message {
 	 * @param trii
      */
     public static Message createMessage(String content, Set<Message> parents, User author, Trii trii){
-		if(parents == null || author == null || content == null || trii == null) throw new IllegalArgumentException("\nWhy did you pass null arguments?\n");
-    	Message retval = new Message(content,parents,author,trii);
+		Message retval = new Message(content,parents,author,trii);
+		if(!parents.isEmpty()){
+			for(Message p : parents){
+				p.addReply(retval);
+			}
+		}
 		trii.addMessage(retval);
 		OfyService.save(retval);
 		return retval;
@@ -86,6 +90,11 @@ public class Message {
 		}
 		return retval;
 	}
+
+	/**
+	 * Gets all immeadiate replies
+	 * @return
+     */
 	public Set<Message> getReplies() {
 		Set<Message> retval = new HashSet<Message>();
 		if(this.replies == null) this.replies = new HashSet<Ref<Message>>();

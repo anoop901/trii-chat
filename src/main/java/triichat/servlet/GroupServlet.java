@@ -2,7 +2,6 @@ package triichat.servlet;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.googlecode.objectify.Objectify;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,7 +88,7 @@ public class GroupServlet extends HttpServlet {
         }
         Set<User> users = new HashSet<User>();
         users.add(user);
-        Group currentGroup = Group.createGroup(name,users,null);
+        Group currentGroup = Group.createGroup(name,users);
 
         // TODO: notify the userGroup currentGroup = OfyService.getGroup(groupID);
         resp.setContentType("application/json");
