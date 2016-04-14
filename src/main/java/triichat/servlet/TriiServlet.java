@@ -3,6 +3,7 @@ package triichat.servlet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import triichat.Group;
 import triichat.Message;
 import triichat.OfyService;
@@ -12,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Set;
 
@@ -53,7 +55,21 @@ public class TriiServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // request parameter "name" contains the name of the new trii
         // request parameter "group" contains the group ID where this trii will be added
-        // TODO: create a trii in the database within the specified group with no messages, with the specified name
+		resp.setContentType("application/html");
+    	String command = req.getPathInfo();
+    	if(command != null){
+    		long triiID = Long.parseLong(req.getParameter("id"));
+    		switch(command){
+    		case "/delete":
+	            //OfyService.deleteTrii(triiID);
+    			break;
+    		case "/edit":
+    			break;
+    		}
+	    	return;	
+    	}
+    	
+    	// TODO: create a trii in the database within the specified group with no messages, with the specified name
         // TODO: notify any active users in the group that a new trii has been created
         String name = req.getParameter("name");
         Long groupId = Long.parseLong(req.getParameter("group"));
