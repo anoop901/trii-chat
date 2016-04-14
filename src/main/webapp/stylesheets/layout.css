@@ -21,10 +21,28 @@ button {
   button:hover {
     color: #75b1e8; }
 
-.container {
+main {
   margin: 0 auto;
   width: 90%;
   min-width: 850px;
+  height: 90%;
+  background: #94C2ED;
+  border-radius: 5px; }
+
+.title {
+  height: 10%;
+  padding: 10px; }
+  .title h1 {
+    margin: 0px;
+    padding: 0px; }
+  .title .name {
+    float: right; }
+  .title a {
+    float: right;
+    clear: both; }
+
+.container {
+  margin: 0 auto;
   height: 90%;
   background: #444753;
   border-radius: 5px; }
@@ -35,7 +53,6 @@ button {
   padding: 20px;
   height: 100%;
   background: gray;
-  border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   text-align: center; }
   .group-selection h2 {
@@ -88,7 +105,6 @@ button {
   height: 100%;
   float: left;
   background: #F2F5F8;
-  border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   color: #434651; }
   .trii-view .trii-header {

@@ -27,9 +27,11 @@
     if(user != null){
 %>
 
-<div id="title">
-    <div>Trii Chat</div>
-    <div>Welcome, <%= user.getNickname() %></div>
+<main>
+<div id="title" class="title">
+    <div class="name">Welcome, <%= user.getNickname() %></div>
+	<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">Sign out</a>
+    <h1>Trii Chat</h1>
 </div>
 <%
     	triichat.User triiUser = triichat.User.findUser(user);
@@ -43,6 +45,7 @@
 	
 	<%@ include file="triiPart.jsp" %>
 </div>
+</main>
 
 <script>
 
@@ -105,10 +108,11 @@ $(document).ready(function () {
 <form action="/userPage.jsp">
     <input type="submit" value="Create TriiChat User">
 </form>
+
+<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">Sign out</a>
 <%	
     	}
 %>
-<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">Sign out</a></p>
 
 <%
     }else{
