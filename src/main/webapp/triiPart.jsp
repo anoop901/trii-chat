@@ -30,31 +30,46 @@
 		  <label for="name">Trii Name:</label>
 		  <input type="text" name="name" placeholder="NewTrii" required><br>
 		  <input type="submit" value="Create Trii">
+		  <script>
+			// Attach a submit handler to the form
+			$( "#createTriiForm" ).submit(function( event ) {
+			  event.preventDefault();
+			  var url = $( this ).attr( "action" );
+			  // Get data from form
+			  var data = $( this ).serializeArray();
+			  data.push({name: 'group', value: selectedGroupID});
+			  // Send the data using post
+			  var posting = $.post( url, data, function( trii ) {
+				  addTrii(trii);
+				  $('#createTrii').removeClass('visible');
+			  }, "json");
+			});
+		  </script>  
 		</form>
       </div>
-    </div>
-    
-    <script>
-		// Attach a submit handler to the form
-		$( "#createTriiForm" ).submit(function( event ) {
-		  event.preventDefault();
-		  var $form = $( this ),
-		    url = $form.attr( "action" );
-		  
-		  // Get data from form
-		  var data = $( this ).serializeArray();
-		  data.push({name: 'group', value: selectedGroupID});
-		  
-		  // Send the data using post
-		  var posting = $.post( url, data, function( trii ) {
-			  addTrii(trii);
-			  $('#createTrii').removeClass('visible');
-		  }, "json");
-		});
-	</script>    
+    </div>    
 </div>
 
 <script>
+
+function createTriiList(triis){
+	// Create Trii View
+    var title = "<h3 onclick='clearTriiSelection();'>Triis</h3>";
+    var button = $("<button>", {id:"create-trii-button",  onclick:"$('#createTrii').addClass('visible');event.stopPropagation();", text:"New Trii"});
+    var ul = $("<ul>", {id:"trii-list", class:"trii-list"});
+    var error = $("<p>", {id:"trii-error"});
+    $('#group-triis').append( title, button, ul, error );
+    triiListElem = ul;
+
+    // iterate through list of triis
+    for (var i = 0; i < triis.length; i++) {
+        var triiID = triis[i];
+        // get this trii's name
+        $.getJSON('/trii', {id: triiID}, (function (triiID, trii) {
+        	addTrii(trii);
+        }).bind(undefined, triiID));
+    }
+}
 
 function addTrii(trii){
  	// create the <li> element containing this trii's name
@@ -66,8 +81,7 @@ function addTrii(trii){
     });
 	var remove = $("<button>", {text: "Delete"});
 	remove.click(function (e){
-		var posting = $.post( '/trii/delete', {id: trii['id']} );
-  		posting.done(function() {
+		$.post( '/trii/delete', {id: trii['id']}, function() {
   			liElem.remove();
   			if(trii['id'] == selectedTriiID){
   				clearTriiSelection();
