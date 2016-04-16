@@ -4,13 +4,12 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import triichat.Message;
-import triichat.OfyService;
-import triichat.Trii;
+import triichat.model.Message;
+import triichat.db.OfyService;
+import triichat.model.Trii;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +27,7 @@ public class MessageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         long messageID = Long.parseLong(request.getParameter("id"));
-        triichat.Message triiMessage = OfyService.getMessage(messageID);
+        Message triiMessage = OfyService.getMessage(messageID);
         
         response.setContentType("application/json");  
         JSONObject message = new JSONObject();
@@ -60,21 +59,33 @@ public class MessageServlet extends HttpServlet {
     		}
 	    	return;	
     	}
-    	
+
+        // the message body
         String messageBody = request.getParameter("body");
+        // the ID of the trii
         Long triiID = Long.parseLong(request.getParameter("trii_id"));
+        // the ID of the parent message (as String and Long). both will be null if parameter is unspecified
+        String parentMessageIDStr = request.getParameter("parent_id");
+        Long parentMessageID = parentMessageIDStr == null ? null : Long.parseLong(parentMessageIDStr);
+
+        // get logged-in user
         UserService userService = UserServiceFactory.getUserService();
         User gUser = userService.getCurrentUser();
-        triichat.User user = triichat.User.findUser(gUser);
+        triichat.model.User user = triichat.model.User.findUser(gUser);
         if(user == null){
-            user = triichat.User.createUser(gUser);
+            user = triichat.model.User.createUser(gUser);
         }
+
+        // trii to add message to
         Trii trii = OfyService.getTrii(triiID);
-        // get most recent message to make it the parent as default
-        // TODO: eventually make this use actual parent
+
+        // if parent_id parameter is specified,
         Set<Message> parents = new HashSet<Message>();
-        Message recent = getMostRecent(trii);
-        if(recent != null){parents.add(recent);}
+        if(parentMessageID != null) {
+            Message parent = OfyService.getMessage(parentMessageID);
+            parents.add(parent);
+        }
+
         // Create message
         Message newMessage = Message.createMessage(messageBody, parents, user,trii);
         for(Message p : parents){

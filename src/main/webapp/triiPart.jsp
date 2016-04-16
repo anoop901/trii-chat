@@ -2,7 +2,7 @@
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.datastore.*" %>
-<%@ page import="triichat.OfyService" %>
+<%@ page import="triichat.db.OfyService" %>
 
 <div class="trii">
 <script>

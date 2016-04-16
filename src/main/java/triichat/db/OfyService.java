@@ -1,10 +1,13 @@
-package triichat;
+package triichat.db;
 
 import java.util.List;
 
-import com.google.appengine.api.datastore.Entity;
 import com.googlecode.objectify.*;
 import com.googlecode.objectify.cmd.Loader;
+import triichat.model.Group;
+import triichat.model.Message;
+import triichat.model.Trii;
+import triichat.model.User;
 
 /* Usage
 
@@ -36,10 +39,10 @@ public class OfyService {
 	 */
     static {
         // register all classes here
-        ObjectifyService.register(triichat.Group.class);
-        ObjectifyService.register(triichat.Message.class);
-        ObjectifyService.register(triichat.Trii.class);
-        ObjectifyService.register(triichat.User.class);
+        ObjectifyService.register(Group.class);
+        ObjectifyService.register(Message.class);
+        ObjectifyService.register(Trii.class);
+        ObjectifyService.register(User.class);
     }
 
     /**

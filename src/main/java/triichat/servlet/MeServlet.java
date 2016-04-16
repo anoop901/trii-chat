@@ -6,14 +6,13 @@ import com.google.appengine.api.users.UserServiceFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import triichat.Group;
+import triichat.model.Group;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,9 +30,9 @@ public class MeServlet extends HttpServlet {
 
         UserService userService = UserServiceFactory.getUserService();
         User gUser = userService.getCurrentUser();
-        triichat.User user = triichat.User.findUser(gUser);
+        triichat.model.User user = triichat.model.User.findUser(gUser);
         if(user == null){
-            user = triichat.User.createUser(gUser);
+            user = triichat.model.User.createUser(gUser);
         }
         // Get their groups and put group ids in the groups json array
         Set<Group> triiGroups = user.getGroups();

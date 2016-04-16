@@ -1,6 +1,5 @@
-package triichat;
+package triichat.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +13,8 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Load;
-import com.googlecode.objectify.cmd.Query;
+import triichat.db.OfyService;
+
 /**
  * Created by Margret on 3/8/2016.
  */
@@ -62,9 +62,9 @@ public class User {
 		UserService userService = UserServiceFactory.getUserService();
 		com.google.appengine.api.users.User gUser = userService.getCurrentUser();
 		if(gUser == null){return null;}
-		triichat.User user = triichat.User.findUser(gUser);
+		User user = User.findUser(gUser);
 		if(user == null){
-			user = triichat.User.createUser(gUser);
+			user = User.createUser(gUser);
 		}
 		user.setName(name);
 		return user;

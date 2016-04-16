@@ -5,10 +5,10 @@ import com.google.appengine.api.users.UserServiceFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import triichat.Group;
-import triichat.OfyService;
-import triichat.Trii;
-import triichat.User;
+import triichat.model.Group;
+import triichat.db.OfyService;
+import triichat.model.Trii;
+import triichat.model.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -82,9 +82,9 @@ public class GroupServlet extends HttpServlet {
 
         UserService userService = UserServiceFactory.getUserService();
         com.google.appengine.api.users.User gUser = userService.getCurrentUser();
-        triichat.User user = triichat.User.findUser(gUser);
+        User user = User.findUser(gUser);
         if(user == null){
-            user = triichat.User.createUser(gUser);
+            user = User.createUser(gUser);
         }
         Set<User> users = new HashSet<User>();
         users.add(user);

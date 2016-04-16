@@ -4,8 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import triichat.OfyService;
-import triichat.User;
+import triichat.db.OfyService;
+import triichat.model.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

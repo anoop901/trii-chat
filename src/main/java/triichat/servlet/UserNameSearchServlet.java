@@ -3,7 +3,7 @@ package triichat.servlet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import triichat.User;
+import triichat.model.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Margret on 4/5/2016.

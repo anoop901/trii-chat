@@ -1,4 +1,4 @@
-package triichat;
+package triichat.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,6 +8,7 @@ import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Load;
+import triichat.db.OfyService;
 
 /**
  * Created by Margret on 3/8/2016.

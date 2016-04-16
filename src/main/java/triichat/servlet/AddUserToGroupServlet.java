@@ -1,7 +1,8 @@
 package triichat.servlet;
 
-import triichat.Group;
-import triichat.OfyService;
+import triichat.model.Group;
+import triichat.db.OfyService;
+import triichat.model.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,7 +24,7 @@ public class AddUserToGroupServlet extends HttpServlet {
         String userID = request.getParameter("user");
 
         Group group = OfyService.getGroup(groupID);
-        triichat.User user = OfyService.getUser(userID);
+        User user = OfyService.getUser(userID);
         if(group == null || user == null){
             //TODO: Error Message
             return;

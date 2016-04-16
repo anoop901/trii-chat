@@ -1,9 +1,10 @@
-package triichat;
+package triichat.model;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Load;
+import triichat.db.OfyService;
 
 import java.util.*;
 

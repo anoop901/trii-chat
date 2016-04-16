@@ -4,10 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import triichat.Group;
-import triichat.Message;
-import triichat.OfyService;
-import triichat.Trii;
+import triichat.model.Group;
+import triichat.model.Message;
+import triichat.db.OfyService;
+import triichat.model.Trii;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

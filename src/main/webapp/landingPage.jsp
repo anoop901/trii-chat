@@ -2,7 +2,7 @@
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.datastore.*" %>
-<%@ page import="triichat.OfyService" %>
+<%@ page import="triichat.db.OfyService" %>
 <%--
   Created by IntelliJ IDEA.
   UserServlet: anoop
@@ -34,7 +34,7 @@
     <h1>Trii Chat</h1>
 </div>
 <%
-    	triichat.User triiUser = triichat.User.findUser(user);
+    	triichat.model.User triiUser = triichat.model.User.findUser(user);
     	if(triiUser != null){
 %>
 
