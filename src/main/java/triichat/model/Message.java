@@ -69,6 +69,7 @@ public class Message {
     	this.timestamp = new Date();
 		this.author = Key.create(author);
 		this.holder = Key.create(Trii.class, trii.getId());
+		OfyService.save(this);
     }
     
     public Long getId(){
