@@ -59,10 +59,8 @@
     <p id="group-error"></p>
 </div> 
 
-
 <%@ include file="memberPart.jsp" %>
-	
-
+    
 <script>
 $(document).ready(function () {
     addUserToGroupButtonElem.click(function (e) {
