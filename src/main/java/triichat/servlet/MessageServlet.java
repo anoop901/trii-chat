@@ -32,7 +32,7 @@ public class MessageServlet extends HttpServlet {
         response.setContentType("application/json");  
         JSONObject message = new JSONObject();
 
-        // TODO: test this also does it want author id? or name?
+        // TODO: test this
         try {
         	message.put("id", messageID);
             message.put("author", triiMessage.getAuthor().getId());
@@ -60,51 +60,58 @@ public class MessageServlet extends HttpServlet {
 	    	return;	
     	}
 
-        // the message body
-        String messageBody = request.getParameter("body");
-        // the ID of the trii
-        Long triiID = Long.parseLong(request.getParameter("trii_id"));
-        // the ID of the parent message (as String and Long). both will be null if parameter is unspecified
-        String parentMessageIDStr = request.getParameter("parent_id");
-        Long parentMessageID = parentMessageIDStr == null ? null : Long.parseLong(parentMessageIDStr);
+        if (command == null) {
+            // the message body
+            String messageBody = request.getParameter("body");
+            // the ID of the trii
+            Long triiID = Long.parseLong(request.getParameter("trii_id"));
+            // the ID of the parent message (as String and Long). both will be null if parameter is unspecified
+            String parentMessageIDStr = request.getParameter("parent_id");
+            Long parentMessageID = parentMessageIDStr == null ? null : Long.parseLong(parentMessageIDStr);
 
-        // get logged-in user
-        UserService userService = UserServiceFactory.getUserService();
-        User gUser = userService.getCurrentUser();
-        triichat.model.User user = triichat.model.User.findUser(gUser);
-        if(user == null){
-            user = triichat.model.User.createUser(gUser);
+            // get logged-in user
+            UserService userService = UserServiceFactory.getUserService();
+            User gUser = userService.getCurrentUser();
+            triichat.model.User user = triichat.model.User.findUser(gUser);
+            if (user == null) {
+                user = triichat.model.User.createUser(gUser);
+            }
+
+            // trii to add message to
+            Trii trii = OfyService.getTrii(triiID);
+
+            // if parent_id parameter is specified,
+            Set<Message> parents = new HashSet<Message>();
+            if (parentMessageID != null) {
+                Message parent = OfyService.getMessage(parentMessageID);
+                parents.add(parent);
+            }
+
+            // Create message
+            Message newMessage = Message.createMessage(messageBody, parents, user, trii);
+            for (Message p : parents) {
+                p.addReply(newMessage);
+            }
+            // TODO: notify any users who are listening to this trii
+            System.out.println("trii: " + triiID + ", message: " + messageBody);
+
+            response.setContentType("application/json");
+            JSONObject message = new JSONObject();
+            try {
+                message.put("id", newMessage.getId());
+                message.put("author", newMessage.getAuthor().getId());
+                message.put("body", newMessage.getContent());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            response.getWriter().println(message);
+        } else if (command.equals("/delete")) {
+            long messageID = Long.parseLong(request.getParameter("id"));
+            // OfyService.deleteMessage(messageID);
+        } else if (command.equals("/edit")) {
+            long messageID = Long.parseLong(request.getParameter("id"));
         }
-
-        // trii to add message to
-        Trii trii = OfyService.getTrii(triiID);
-
-        // if parent_id parameter is specified,
-        Set<Message> parents = new HashSet<Message>();
-        if(parentMessageID != null) {
-            Message parent = OfyService.getMessage(parentMessageID);
-            parents.add(parent);
-        }
-
-        // Create message
-        Message newMessage = Message.createMessage(messageBody, parents, user,trii);
-        for(Message p : parents){
-        	p.addReply(newMessage);
-        }
-        // TODO: notify any users who are listening to this trii
-        System.out.println("trii: " + triiID + ", message: " + messageBody);
-        
-        response.setContentType("application/json");
-        JSONObject message = new JSONObject();
-        try {
-        	message.put("id", newMessage.getId());
-            message.put("author", newMessage.getAuthor().getId());
-            message.put("body", newMessage.getContent());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        response.getWriter().println(message);
     }
 
     private Message getMostRecent(Trii trii){

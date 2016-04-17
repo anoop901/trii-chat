@@ -30,7 +30,6 @@ public class AddUserToGroupServlet extends HttpServlet {
             return;
         }
         group.addUser(user);
-        user.addGroup(group);
         // TODO: if user is active, send user a message saying they were added to the group - HOW?
         // TODO: also notify other users in group that a new user has been added
     }

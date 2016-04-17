@@ -26,16 +26,17 @@ public class MeServlet extends HttpServlet {
         JSONArray groups = new JSONArray();
 
         // TODO: test
-        // Get user that's logged in
-
+        // Get user that's logged in, or ignore request if not a TriiChat user
         UserService userService = UserServiceFactory.getUserService();
         User gUser = userService.getCurrentUser();
         triichat.model.User user = triichat.model.User.findUser(gUser);
         if(user == null){
-            user = triichat.model.User.createUser(gUser);
+            return; // ignore request
         }
+
         // Get their groups and put group ids in the groups json array
         Set<Group> triiGroups = user.getGroups();
+
         for(Group g : triiGroups){
             groups.put(g.getId());
         }

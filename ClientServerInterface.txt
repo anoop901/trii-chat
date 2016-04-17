@@ -1,0 +1,60 @@
+Client/Server Interface
+
+GET /me
+Returns the logged-in user's ID, and IDs of groups the user is a member of in this format:
+{"id": USER-ID, "groups": [GROUP-ID, ...]}
+
+GET /group?id=GROUP-ID
+Returns the specified group's ID, name, IDs of contained triis, and IDs of contained members in this format:
+{"id": GROUP-ID , "name": "GROUP-NAME" , "triis": [TRII-ID, ...], "members": [USER-ID, ...]}
+
+POST /group?name=GROUP-NAME
+Creates a group with the given name containing only the logged-in user and no triis.
+
+[unimplemented]
+POST /group/delete?id=GROUP-ID
+Deletes the specified group.
+
+GET /trii?id=TRII-ID
+Returns the specified trii's ID, name, and IDs of all contained messages in this format:
+{"id": TRII-ID, "name": "TRII-NAME", "messages": [MESSAGE-ID, ...]}
+
+POST /trii?name=TRII-NAME&group=GROUP-ID
+Creates a trii in the specified group with the given name containing no messages.
+
+[unimplemented]
+POST /trii/delete?id=TRII-ID
+Deletes the specified trii.
+
+[unimplemented]
+POST /trii/edit?id=TRII-ID
+tbh I'm not sure what this is really for. -Anoop
+
+GET /message?id=MESSAGE-ID
+Returns the specified message's ID, author's ID, and content in this format:
+{"id": MESSAGE-ID, "author": USER-ID, "body": "CONTENT"}
+
+POST /message?body=CONTENT&trii_id=TRII-ID
+Creates a message with the given content, in the specified tree, with no parents.
+
+POST /message?body=CONTENT&trii_id=TRII-ID&parent_id=MESSAGE-ID
+Creates a message with the given content, in the specified tree, with the specified parent message.
+
+[unimplemented]
+POST /message/delete?id=MESSAGE-ID
+Deletes the specified message.
+
+[unimplemented]
+POST /message/edit?id=MESSAGE-ID
+tbh I'm not sure what this is really for. -Anoop
+
+GET /user?id=USER-ID
+Returns the specified user's name and contacts in this format:
+{name: "USER-NAME", contacts: [USER-ID, ...]}
+
+GET /username-search?name=USER-NAME
+Returns a list of IDs of all the users who have this name, or an empty list if there are none in this format:
+{users: [USER-ID, ...]}
+
+
+

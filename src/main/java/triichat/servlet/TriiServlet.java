@@ -31,7 +31,7 @@ public class TriiServlet extends HttpServlet {
         JSONArray messages = new JSONArray();
 
         // TODO: test this code and Trii.getMessages()
-        // populate the JSON with values from the datastore. the following lines are placeholder
+        // populate the JSON with values from the datastore
 
         Trii currentTrii = OfyService.getTrii(triiID);
 
@@ -57,48 +57,52 @@ public class TriiServlet extends HttpServlet {
         // request parameter "group" contains the group ID where this trii will be added
 		resp.setContentType("application/html");
     	String command = req.getPathInfo();
-    	if(command != null){
-    		long triiID = Long.parseLong(req.getParameter("id"));
-    		switch(command){
-    		case "/delete":
-	            //OfyService.deleteTrii(triiID);
-    			break;
-    		case "/edit":
-    			break;
-    		}
-	    	return;	
-    	}
-    	
-    	// TODO: create a trii in the database within the specified group with no messages, with the specified name
-        // TODO: notify any active users in the group that a new trii has been created
-        String name = req.getParameter("name");
-        Long groupId = Long.parseLong(req.getParameter("group"));
-        System.out.println("Creating trii with name=\""+ name +"\" and ID=" + groupId);
-        if(name == null || groupId == null){
-            //TODO: Error Message
-            throw new IllegalArgumentException();
+
+        if (command == null) {
+            // request parameter "name" contains the name of the new trii
+            // request parameter "group" contains the group ID where this trii will be added
+            // create a trii in the database within the specified group with no messages, with the specified name
+            String name = req.getParameter("name");
+            Long groupId = Long.parseLong(req.getParameter("group"));
+            System.out.println("Creating trii with name=\"" + name + "\" and ID=" + groupId);
+            if (name == null || groupId == null) {
+                throw new IllegalArgumentException("POST /trii called with bad parameters");
+            }
+            Group group = OfyService.getGroup(groupId);
+
+            // create the trii
+            Trii trii = Trii.createTrii(name, group);
+
+
+            // return trii info in response
+
+            resp.setContentType("application/json");
+            JSONObject newTrii = new JSONObject();
+            JSONArray messages = new JSONArray();
+
+            Set<Message> messageSet = trii.getMessages();
+
+            for (Message m : messageSet)
+                messages.put(m.getId());
+
+            try {
+                newTrii.put("id", trii.getId());
+                newTrii.put("name", trii.getName());
+                newTrii.put("messages", messages);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            resp.getWriter().println(newTrii);
+
+            // TODO: notify any active users in the group that a new trii has been created
+        } else if (command.equals("/delete")) {
+            // TODO: delete the trii
+            long triiID = Long.parseLong(req.getParameter("id"));
+            //OfyService.deleteTrii(triiID);
+        } else if (command.equals("/edit")) {
+            // TODO: edit the trii
+            long triiID = Long.parseLong(req.getParameter("id"));
         }
-        Group group = OfyService.getGroup(groupId);
-        Trii trii = Trii.createTrii(name, group);
-        group.addTrii(trii);
-        
-        resp.setContentType("application/json");
-        JSONObject newTrii = new JSONObject();
-        JSONArray messages = new JSONArray();
-        
-        Set<Message> messageSet = trii.getMessages();
-
-        for(Message m : messageSet)
-            messages.put(m.getId());
-
-        try {
-        	newTrii.put("id", trii.getId());
-            newTrii.put("name", trii.getName());
-            newTrii.put("messages", messages);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        resp.getWriter().println(newTrii);
     }
 }
