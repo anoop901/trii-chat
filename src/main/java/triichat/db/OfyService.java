@@ -29,7 +29,8 @@ import triichat.model.User;
  */
 /**
  * 
- * Objectify adapter used to register all classes that will be stored.
+ * Objectify facade used to register all classes that will be stored.
+ * Servlets should not use this class. If servlets want to load instances of model classes, use model's static methods.
  * @author Matthew Zhan, Margret Tumbokon
  *
  */
@@ -77,7 +78,7 @@ public class OfyService {
     }
     
     /**
-     * @see Objectify.ofy().load().type(__).filter(__,__).list()
+     * see Objectify.ofy().load().type(__).filter(__,__).list()
      * @param type
      * @param condition
      * @param value
@@ -87,25 +88,26 @@ public class OfyService {
     	return OfyService.load().type(type).filter(condition, value).list();
     }
 
-    public static Group getGroup(Long id) {
+    public static Group loadGroup(Long id) {
         return ofy().load().type(Group.class).id(id).now();
     }
 
-    public static Message getMessage(Long id){
+    public static Message loadMessage(Long id){
         return ofy().load().type(Message.class).id(id).now();
     }
 
-    public static Trii getTrii(Long id){
+    public static Trii loadTrii(Long id){
         return ofy().load().type(Trii.class).id(id).now();
     }
 
-    public static User getUser(String id){
+    public static User loadUser(String id){
         return ofy().load().type(User.class).id(id).now();
     }
 
     public static void deleteGroup(Long id) {
+        // TODO: Remove references to this group from users in it
+        Group group = loadGroup(id);
 
-        Group group = getGroup(id);
         //don't delete users that are part of this group
         //delete triis
         for(Trii t : group.getTriis()){
@@ -138,20 +140,20 @@ public class OfyService {
      */
     public static void deleteTrii(Long id, Long groupID){
         //delete all messages in trii
-        Trii trii = OfyService.getTrii(id);
+        Trii trii = OfyService.loadTrii(id);
         for(Message m : trii.getMessages()){
             OfyService.deleteMessage(m.getId(),id);
         }
         //Remove reference to trii from group that includes it
         //search all groups for ref to this trii
-        Group group = OfyService.getGroup(groupID);
+        Group group = OfyService.loadGroup(groupID);
         group.removeTrii(id);
         //delete trii from datastore
         OfyService.ofy().delete().type(Trii.class).id(id).now();
     }
 
     public static void deleteUser(String id){
-        User user = OfyService.getUser(id);
+        User user = OfyService.loadUser(id);
         for(Group g : user.getGroups()){
             g.removeUser(user.getId());
         }

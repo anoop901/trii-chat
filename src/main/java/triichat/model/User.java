@@ -94,6 +94,7 @@ public class User {
 	public String getAuthDomain() {
 		return authDomain;
 	}
+
 	public Set<Group> getGroups(){
 		Set<Group> retval = new HashSet<Group>();
 		for(Ref<Group> r : this.groups){
@@ -110,7 +111,7 @@ public class User {
 		return retval;
 	}
 	
-	public void addGroup(Group group){
+	void addGroup(Group group){
 		this.groups.add(Ref.create(group));
         OfyService.save(this);
 	}

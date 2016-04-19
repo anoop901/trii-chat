@@ -2,7 +2,6 @@ package triichat.servlet;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +25,7 @@ public class GroupServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         long groupID = Long.parseLong(request.getParameter("id"));
-        Group currentGroup = OfyService.getGroup(groupID);
+        Group currentGroup = OfyService.loadGroup(groupID);
         
         response.setContentType("application/json");
         JSONObject group = new JSONObject();

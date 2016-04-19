@@ -24,7 +24,7 @@ public class TriiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         long triiID = Long.parseLong(request.getParameter("id"));
-        Trii theTrii = OfyService.getTrii(triiID);
+        Trii theTrii = OfyService.loadTrii(triiID);
 
         response.setContentType("application/json");
         JSONObject trii = new JSONObject();
@@ -33,7 +33,7 @@ public class TriiServlet extends HttpServlet {
         // TODO: test this code and Trii.getMessages()
         // populate the JSON with values from the datastore
 
-        Trii currentTrii = OfyService.getTrii(triiID);
+        Trii currentTrii = OfyService.loadTrii(triiID);
 
         Set<Message> messageSet = currentTrii.getMessages();
 
@@ -68,7 +68,7 @@ public class TriiServlet extends HttpServlet {
             if (name == null || groupId == null) {
                 throw new IllegalArgumentException("POST /trii called with bad parameters");
             }
-            Group group = OfyService.getGroup(groupId);
+            Group group = OfyService.loadGroup(groupId);
 
             // create the trii
             Trii trii = Trii.createTrii(name, group);

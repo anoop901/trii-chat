@@ -70,7 +70,7 @@ public class Group {
      * Adds existing Trii to this group
      * @param trii
      */
-    public void addTrii(Trii trii){
+    void addTrii(Trii trii){
         if(this.triis == null) this.triis = new HashSet<Ref<Trii>>();
         this.triis.add(Ref.create(trii));
         OfyService.save(this);

@@ -25,7 +25,7 @@ public class UserServlet extends HttpServlet {
         // "contacts": [UserID, ...]}
 
         String userID = request.getParameter("id");
-        User currentUser = OfyService.getUser(userID);
+        User currentUser = OfyService.loadUser(userID);
         
         response.setContentType("application/html");
     	String command = request.getPathInfo();

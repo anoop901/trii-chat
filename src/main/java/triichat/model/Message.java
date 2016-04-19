@@ -81,7 +81,7 @@ public class Message {
 	}
 
 	public Trii getTrii(){
-		return OfyService.getTrii(this.holder.getId());
+		return OfyService.loadTrii(this.holder.getId());
 	}
 
 	public Set<Message> getParents() {

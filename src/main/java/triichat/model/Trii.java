@@ -95,7 +95,7 @@ public class Trii {
      * Adds a message to a trii
      * @param m
      */
-    public void addMessage(Message m){
+    void addMessage(Message m){
         Key<Message> key = Key.create(Message.class, m.getId());
         Ref<Message> ref = Ref.create(key);
         if(this.all == null){
