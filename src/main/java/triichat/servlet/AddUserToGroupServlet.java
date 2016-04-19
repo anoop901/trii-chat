@@ -23,8 +23,8 @@ public class AddUserToGroupServlet extends HttpServlet {
         long groupID = Long.parseLong(request.getParameter("group"));
         String userID = request.getParameter("user");
 
-        Group group = OfyService.getGroup(groupID);
-        User user = OfyService.getUser(userID);
+        Group group = OfyService.loadGroup(groupID);
+        User user = OfyService.loadUser(userID);
         if(group == null || user == null){
             //TODO: Error Message
             return;

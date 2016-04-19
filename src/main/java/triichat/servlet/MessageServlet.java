@@ -27,7 +27,7 @@ public class MessageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         long messageID = Long.parseLong(request.getParameter("id"));
-        Message triiMessage = OfyService.getMessage(messageID);
+        Message triiMessage = OfyService.loadMessage(messageID);
         
         response.setContentType("application/json");  
         JSONObject message = new JSONObject();
@@ -78,12 +78,12 @@ public class MessageServlet extends HttpServlet {
             }
 
             // trii to add message to
-            Trii trii = OfyService.getTrii(triiID);
+            Trii trii = OfyService.loadTrii(triiID);
 
             // if parent_id parameter is specified,
             Set<Message> parents = new HashSet<Message>();
             if (parentMessageID != null) {
-                Message parent = OfyService.getMessage(parentMessageID);
+                Message parent = OfyService.loadMessage(parentMessageID);
                 parents.add(parent);
             }
 

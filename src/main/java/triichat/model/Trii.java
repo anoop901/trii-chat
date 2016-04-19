@@ -98,6 +98,7 @@ public class Trii {
      */
     public void addMessage(Message m){
         if(this.all == null)
+
             this.all = new HashSet<>();
 
         if(this.all.add(m.getRef())) {
