@@ -1,12 +1,79 @@
-joint.shapes.org.Member.prototype.markup = [
+joint.shapes.msg = {}, joint.shapes.msg.Member = joint.dia.Element.extend({
+    markup: '<g class="rotatable"><g class="scalable"><rect class="card"/><image/></g><text class="author"/><text class="content"/></g>',
+    defaults: joint.util.deepSupplement({
+        type: "msg.Member",
+        size: {
+            width: 180,
+            height: 70
+        },
+        attrs: {
+            rect: {
+                width: 170,
+                height: 60
+            },
+            ".card": {
+                fill: "#FFFFFF",
+                stroke: "#000000",
+                "stroke-width": 2,
+                "pointer-events": "visiblePainted",
+                rx: 10,
+                ry: 10
+            },
+            image: {
+                width: 48,
+                height: 48,
+                ref: ".card",
+                "ref-x": 10,
+                "ref-y": 5
+            },
+            ".author": {
+                "text-decoration": "underline",
+                ref: ".card",
+                "ref-x": .9,
+                "ref-y": .2,
+                "font-family": "Courier New",
+                "font-size": 14,
+                "text-anchor": "end"
+            },
+            ".content": {
+                "font-weight": "800",
+                ref: ".card",
+                "ref-x": .9,
+                "ref-y": .6,
+                "font-family": "Courier New",
+                "font-size": 14,
+                "text-anchor": "end"
+            }
+        }
+    }, joint.dia.Element.prototype.defaults)
+}), joint.shapes.msg.Arrow = joint.dia.Link.extend({
+    defaults: {
+        type: "msg.Arrow",
+        source: {
+            selector: ".card"
+        },
+        target: {
+            selector: ".card"
+        },
+        attrs: {
+            ".connection": {
+                stroke: "#585858",
+                "stroke-width": 3
+            }
+        },
+        z: -1
+    }
+});
+
+joint.shapes.msg.Member.prototype.markup = [
     '<g class="rotatable">',
-    '<g class="scalable">',
-    '<rect class="card"/><image/>',
-    '</g>',
-    '<text class="rank"/><text class="name"/>',
-    '<g class="btn add"><circle class="add"/><text class="add">+</text></g>',
-    '<g class="btn del"><circle class="del"/><text class="del">-</text></g>',
-    '<g class="btn edit"><rect class="edit"/><text class="edit">EDIT</text></g>',
+	    '<g class="scalable">',
+	    	'<rect class="card"/><image/>',
+	    '</g>',
+	    '<text class="author"/><text class="content"/>',
+	    '<g class="btn add"><circle class="add"/><text class="add">+</text></g>',
+	    '<g class="btn del"><circle class="del"/><text class="del">-</text></g>',
+	    '<g class="btn edit"><rect class="edit"/><text class="edit">EDIT</text></g>',
     '</g>'
 ].join('');
 
@@ -14,13 +81,13 @@ var member = function(username, message, image, background, textColor) {
 
     textColor = textColor || "#000";
 
-    var cell = new joint.shapes.org.Member({
-        size: { width: 260, height: 90 },
+    var cell = new joint.shapes.msg.Member({
+        //size: { width: 260, height: 90 },
         attrs: {
             '.card': { fill: background, 'stroke-width': 0 },
             image: { 'xlink:href': image, 'ref-y': 10, opacity: 0.7 },
-            '.rank': { fill: textColor, text: '', 'font-size': 13, 'text-decoration': 'none', 'ref-x': 0.95, 'ref-y': 0.5, 'y-alignment': 'middle', 'word-spacing': '-5px', 'letter-spacing': 0 },
-            '.name': { fill: textColor, text: '', 'ref-x': 0.95, 'ref-y': 0.62, 'font-family': 'Arial' },
+            '.author': { fill: textColor, text: '', 'font-size': 13, 'text-decoration': 'none', 'ref-x': 0.95, 'ref-y': 0.5, 'y-alignment': 'middle', 'word-spacing': '-5px', 'letter-spacing': 0 },
+            '.content': { fill: textColor, text: '', 'ref-x': 0.95, 'ref-y': 0.62, 'font-family': 'Arial' },
             '.btn.add': { 'ref-dx': -15,'ref-y': 15, 'ref': '.card' },
             '.btn.del': { 'ref-dx': -45,'ref-y': 15, 'ref': '.card' },
             '.btn.edit': { 'ref-dx': -140,'ref-y': 5, 'ref': '.card' },
@@ -31,15 +98,15 @@ var member = function(username, message, image, background, textColor) {
             '.btn.edit>text': { fill: textColor,'font-size': 15, 'font-weight': 500, stroke: "#000", x: 5, y: 15, 'font-family': 'Sans Serif' }
         }
     }).on({
-        'change:name': function(cell, name) {
-            cell.attr('.name/text', joint.util.breakText(name, { width: 160, height: 45 }, cell.attr('.name')));
+        'change:author': function(cell, author) {
+            cell.attr('.author/text', joint.util.breakText(author, { width: 160, height: 45 }, cell.attr('.author')));
         },
-        'change:rank': function(cell, rank) {
-            cell.attr('.rank/text', joint.util.breakText(rank, { width: 165, height: 45 }, cell.attr('.rank')));
+        'change:content': function(cell, content) {
+            cell.attr('.content/text', joint.util.breakText(content, { width: 160, height: 45 }, cell.attr('.content')));
         }
     }).set({
-        name: username,
-        rank: message
+        author: username,
+        content: message
     });
 
     return cell;
@@ -47,7 +114,7 @@ var member = function(username, message, image, background, textColor) {
 
 function link(source, target) {
 
-    var cell = new joint.shapes.org.Arrow({
+    var cell = new joint.shapes.msg.Arrow({
         source: { id: source.id },
         target: { id: target.id }
     });
@@ -142,7 +209,7 @@ var treeLayoutView;
 function createMessages() {
     var list = {
         'az': ['b', 'cy'],
-        'b': ['fxf', 'a3'],
+        'b': ['fxf', 'a3', 'dxdy3'],
         'cy': ['ey', 'dxdy', 'a4'],
         'dxdy': ['iy'],
         'ey': ['hy'],
@@ -191,7 +258,7 @@ function createMessages() {
         gridSize: 1,
         model: graph,
         interactive: false,
-        defaultLink: new joint.shapes.org.Arrow()
+        defaultLink: new joint.shapes.msg.Arrow()
     });
 
     paperScroller = new joint.ui.PaperScroller({
@@ -203,7 +270,7 @@ function createMessages() {
     paperScroller.$el.css({ width: '100%', height: '66%' }).appendTo('#paper-holder');
 
     //graph.resetCells(cells);
-    graph.resetCells(members.concat(connections));
+    graph.resetCells([members[0]]);
     
     graphLayout = new joint.layout.TreeLayout({
         graph: graph,
@@ -212,13 +279,13 @@ function createMessages() {
         horizontalGap: 40
     });
 
-    treeLayoutView = new joint.ui.TreeLayoutView({
-        paper: paper,
-        model: graphLayout,
-        previewAttrs: {
-            parent: { rx: 10, ry: 10 }
-        }
-    });
+//    treeLayoutView = new joint.ui.TreeLayoutView({
+//        paper: paper,
+//        model: graphLayout,
+//        previewAttrs: {
+//            parent: { rx: 10, ry: 10 }
+//        }
+//    });
     
     graphLayout.layout();
     paperScroller.centerContent();
@@ -241,7 +308,7 @@ function createMessages() {
     });
     
     
-    paperScroller.zoom(-0.5);
+    paperScroller.zoom(-0.3);
 
     paper.on('cell:pointerup', function(cellView, evt, x, y) {
 
@@ -331,5 +398,8 @@ var directionPicker = new joint.ui.SelectBox({
 $('#orgchart-direction').append(directionPicker.render().el);
 
 function addMessage(message) {
-	
+	var newMember = member(message['author'], message['body'], '/images/demos/orgchart/female.png', '#c6c7e2');
+    var newConnection = link(members[0], newMember);
+    graph.addCells([newMember, newConnection]);
+    graphLayout.prepare().layout();
 }
