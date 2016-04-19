@@ -106,7 +106,6 @@ public class OfyService {
     }
 
     public static void deleteGroup(Long id) {
-        // TODO: Remove references to this group from users in it
         Group group = loadGroup(id);
 
         //don't delete users that are part of this group
