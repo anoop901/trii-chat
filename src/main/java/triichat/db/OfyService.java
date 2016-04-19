@@ -104,12 +104,18 @@ public class OfyService {
     }
 
     public static void deleteGroup(Long id) {
-        // TODO: Remove references to this group from users in it
+
         Group group = getGroup(id);
         //don't delete users that are part of this group
         //delete triis
         for(Trii t : group.getTriis()){
             OfyService.deleteTrii(t.getId(),id);
+        }
+
+        // Remove references to this group from users in it
+        // TODO: test groups are properly removed from user class
+        for(User u: group.getUsers()) {
+            u.removeGroup(group);
         }
 
         OfyService.ofy().delete().type(Group.class).id(id).now();

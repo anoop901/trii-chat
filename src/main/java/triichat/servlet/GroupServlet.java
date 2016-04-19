@@ -124,8 +124,7 @@ public class GroupServlet extends HttpServlet {
 
         } else if (command.equals("/delete")) {
             long groupID = Long.parseLong(req.getParameter("id"));
-            // TODO: delete the group
-            //OfyService.deleteGroup(groupID);
+            OfyService.deleteGroup(groupID);
         }
     }
 }
