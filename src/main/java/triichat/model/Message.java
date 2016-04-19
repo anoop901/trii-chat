@@ -110,18 +110,59 @@ public class Message {
 	}
 	
 	public void addReply(Message reply){
-		if(this.replies == null) this.replies = new HashSet<Ref<Message>>();
-		this.replies.add(Ref.create(reply));
-        OfyService.save(this);
-		
+        if(this.replies == null) this.replies = new HashSet<Ref<Message>>();
+
+		if(this.replies.add(reply.getRef()))
+            OfyService.save(this);
 	}
+
+    public void removeReply(Message reply) {
+        if(this.replies == null) this.replies = new HashSet<Ref<Message>>();
+
+        if(this.replies.remove(reply.getRef()))
+            OfyService.save(this);
+    }
+
+    public Ref<Message> getRef() {
+        Key<Message> key = Key.create(Message.class, this.getId());
+        Ref<Message> ref = Ref.create(key);
+
+        return ref;
+    }
     
 	public void addParent(Message parent){
-		if(this.parents == null) this.replies = new HashSet<Ref<Message>>();
-		this.parents.add(Ref.create(parent));
-        OfyService.save(this);
-		
+        // create the HashSet if it does not exist
+		if(this.parents == null)
+            this.replies = new HashSet<Ref<Message>>();
+
+		if(this.parents.add(parent.getRef()))
+            OfyService.save(this);
 	}
+
+    public void removeParent(Message parent) {
+        if(this.parents == null)
+            this.replies = new HashSet<Ref<Message>>();
+
+        if(this.parents.remove(parent.getRef()))
+            OfyService.save(this);
+    }
+
+    /**
+     * remove references to this Message from all parent and reply messages
+     */
+    public void unlink() {
+        for (Ref<Message> r : this.replies) {
+            Message reply = r.get();
+            reply.removeParent(this);
+            OfyService.save(reply);
+        }
+
+        for(Ref<Message> p : this.parents) {
+            Message parent = p.get();
+            parent.removeReply(this);
+            OfyService.save(parent);
+        }
+    }
 
 	public User getAuthor(){
 		return OfyService.load().key(this.author).now();
@@ -130,10 +171,10 @@ public class Message {
     /**
      * Returns a set containing all descendant messages
      * Adds the immediate children messages and calls getAllReplies for each immediate reply
-	 * TODO: Make this actually get all kids not just first kid's kid etc.
      * @return
      */
 	public Set<Message> getAllReplies() {
+        // TODO: test if this works. may be deprecated by getMessages in Trii class
 		Set<Message> retval = new HashSet<Message>();
 		retval.add(this);
         for(Ref<Message> r : this.replies)

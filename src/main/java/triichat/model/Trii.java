@@ -93,21 +93,28 @@ public class Trii {
 
     /**
      * Adds a message to a trii
+     * And sets the root message if there is none
      * @param m
      */
     public void addMessage(Message m){
-        Key<Message> key = Key.create(Message.class, m.getId());
-        Ref<Message> ref = Ref.create(key);
-        if(this.all == null){
+        if(this.all == null)
             this.all = new HashSet<>();
+
+        if(this.all.add(m.getRef())) {
+            if(this.root == null)
+                this.root = m.getRef();
+
+            OfyService.save(this);
         }
-        if(this.all.contains(ref)){return;}//already has it
-        this.all.add(ref);
-        if(this.root == null){
-            this.root = ref;
-        }
-        OfyService.save(this);
-        return;
+    }
+
+    /**
+     * Removes Messsage reference by object
+     * @param m
+     */
+    public void removeMessage(Message m) {
+        if(this.all.remove(m.getRef()))
+            OfyService.save(this);
     }
 
 }

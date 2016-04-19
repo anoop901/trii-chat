@@ -1,6 +1,7 @@
 package triichat.db;
 
 import java.util.List;
+import java.util.Set;
 
 import com.googlecode.objectify.*;
 import com.googlecode.objectify.cmd.Loader;
@@ -109,7 +110,7 @@ public class OfyService {
         //don't delete users that are part of this group
         //delete triis
         for(Trii t : group.getTriis()){
-            OfyService.deleteTrii(t.getId(),id);
+            OfyService.deleteTrii(t.getId());
         }
 
         // Remove references to this group from users in it
@@ -122,11 +123,19 @@ public class OfyService {
     }
 
     /**
-     * Deletes message, but needs trii that it belongs to
+     * Deletes a message and Trii reference to it and all message references to it
      * @param id
      */
-    public static void deleteMessage(Long id, Long triiId){
-        //TODO: Remove refernce to this message from parents and replies
+    public static void deleteMessage(Long id){
+        //TODO: Test reference deletion for trii, parents, and replies
+        Message message = OfyService.getMessage(id);
+
+        // Remove Trii reference
+        Trii trii = message.getTrii();
+        trii.removeMessage(message);
+
+        // Remove reference to other messages: parents and replies
+        message.unlink();
 
         OfyService.ofy().delete().type(Message.class).id(id).now();
     }
@@ -134,21 +143,20 @@ public class OfyService {
     /**
      * Deletes given trii and all messages inside it
      * @param id
-     * @param groupID - Group that trii belongs to
      */
-    public static void deleteTrii(Long id, Long groupID){
-        //delete all messages in trii
+    public static void deleteTrii(Long id) {
         Trii trii = OfyService.getTrii(id);
-        for(Message m : trii.getMessages()){
-            OfyService.deleteMessage(m.getId(),id);
-        }
-        //Remove reference to trii from group that includes it
-        //search all groups for ref to this trii
-        Group group = OfyService.getGroup(groupID);
+
+        // remove the reference to this trii in the Group
+        Group group = trii.getGroup();
         group.removeTrii(id);
-        //delete trii from datastore
-        OfyService.ofy().delete().type(Trii.class).id(id).now();
+
+        // remove all messages from this trii
+        for(Message m : trii.getMessages()) {
+            OfyService.deleteMessage(m.getId());
+        }
     }
+
 
     public static void deleteUser(String id){
         User user = OfyService.getUser(id);
@@ -157,5 +165,4 @@ public class OfyService {
         }
         OfyService.ofy().delete().type(User.class).id(id).now();
     }
-
 }
