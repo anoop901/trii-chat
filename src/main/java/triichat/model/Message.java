@@ -94,7 +94,7 @@ public class Message {
 	}
 
 	/**
-	 * Gets all immeadiate replies
+	 * Gets all immediate replies
 	 * @return
      */
 	public Set<Message> getReplies() {
@@ -135,13 +135,10 @@ public class Message {
      */
 	public Set<Message> getAllReplies() {
 		Set<Message> retval = new HashSet<Message>();
-
+		retval.add(this);
         for(Ref<Message> r : this.replies)
         {
             Message m = r.get();
-            // add the immediate child and all its child messages
-            retval.add(m);
-
             Set<Message> childrenReplies = m.getAllReplies();
             retval.addAll(childrenReplies);
         }
