@@ -61,10 +61,9 @@ public class Group {
      * @param user
      */
     public void addUser(User user){
-        this.users.add(Ref.create(user));
-        OfyService.save(this);
+        if(this.users.add(user.getRef()))
+            OfyService.save(this);
     }
-
 
     /**
      * Adds existing Trii to this group
@@ -72,9 +71,12 @@ public class Group {
      */
     void addTrii(Trii trii){
         if(this.triis == null) this.triis = new HashSet<Ref<Trii>>();
-        this.triis.add(Ref.create(trii));
-        OfyService.save(this);
+
+        if(this.triis.add(trii.getRef()))
+            OfyService.save(this);
     }
+
+
 
     public Set<Trii> getTriis(){
         Set<Trii> retval = new HashSet<Trii>();
@@ -122,8 +124,8 @@ public class Group {
     }
 
     public void removeTrii(Long id){
-        Ref<Trii> ref = Ref.create(Key.create(Trii.class,id));
-        this.triis.remove(ref);
+        if(this.triis.remove(Trii.getRef(id)))
+            OfyService.save(this);
     }
 
     /**
@@ -131,13 +133,19 @@ public class Group {
      * @param user
      */
     public void removeUser(User user){
-        this.users.remove(Ref.create(user));
-        user.removeGroup(this);
-        OfyService.save(this);
-    }
-    public void removeUser(String id){
-        Ref<User> ref = Ref.create(Key.create(User.class,id));
-        this.users.remove(ref);
+        if(this.users.remove(user.getRef())) {
+            OfyService.save(this);
+            user.removeGroup(this);
+            OfyService.save(user);
+        }
     }
 
+    public void removeUser(String id){
+        if(this.users.remove(User.getRef(id))) {
+            OfyService.save(this);
+            User user = OfyService.loadUser(id);
+            user.removeGroup(this);
+            OfyService.save(user);
+        }
+    }
 }

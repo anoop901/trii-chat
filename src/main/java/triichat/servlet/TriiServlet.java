@@ -97,10 +97,7 @@ public class TriiServlet extends HttpServlet {
 
             // TODO: notify any active users in the group that a new trii has been created
         } else if (command.equals("/delete")) {
-            // TODO: delete the trii
-            System.out.println("Deleting Trii");
             Long triiId = Long.parseLong(req.getParameter("id"));
-            //Long groupId = Long.parseLong(req.getParameter("group"));
             OfyService.deleteTrii(triiId);
         } else if (command.equals("/edit")) {
             // TODO: edit the trii

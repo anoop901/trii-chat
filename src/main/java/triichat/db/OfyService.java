@@ -152,7 +152,6 @@ public class OfyService {
 
         // remove the reference to this trii in the Group
         Group group = trii.getGroup();
-
         group.removeTrii(id);
 
         // remove all messages from this trii

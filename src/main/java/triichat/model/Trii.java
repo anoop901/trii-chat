@@ -46,6 +46,19 @@ public class Trii {
         OfyService.save(this);
     }
 
+    public Ref<Trii> getRef() {
+        Key<Trii> key = Key.create(Trii.class, this.getId());
+        Ref<Trii> ref = Ref.create(key);
+        return ref;
+    }
+
+    public static Ref<Trii> getRef(long triiId) {
+        Key<Trii> key = Key.create(Trii.class, triiId);
+        Ref<Trii> ref = Ref.create(key);
+        return ref;
+    }
+
+
     public Group getGroup(){
         if(this.group == null){return null;}
         else{return this.group.get();}

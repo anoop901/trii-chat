@@ -36,6 +36,18 @@ public class User {
     	this.contacts = new HashSet<Ref<User>>();
         this.groups = new HashSet<Ref<Group>>();
     }
+
+	public Ref<User> getRef() {
+        Key<User> key = Key.create(User.class, this.getId());
+        Ref<User> ref = Ref.create(key);
+        return ref;
+    }
+
+    public static Ref<User> getRef(String userId) {
+        Key<User> key = Key.create(User.class, userId);
+        Ref<User> ref = Ref.create(key);
+        return ref;
+    }
     /**
      * Creates and saves user
      * @param user
