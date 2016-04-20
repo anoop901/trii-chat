@@ -55,7 +55,11 @@ public class User {
      */
     public static User createUser(com.google.appengine.api.users.User user) {
         User made = new User();
-        made.id = user.getUserId(); 
+		if(user.getUserId() == null){
+			made.id = user.getEmail();
+		}else{
+			made.id = user.getUserId();
+		}
         made.federatedId = user.getFederatedIdentity();
         made.authDomain = user.getAuthDomain();
         made.name = user.getNickname();
