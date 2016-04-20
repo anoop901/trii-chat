@@ -48,17 +48,6 @@ public class MessageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	response.setContentType("application/html");
 		String command = request.getPathInfo();
-		if(command != null){
-    		long messageID = Long.parseLong(request.getParameter("id"));
-    		switch(command){
-    		case "/delete":
-	            //OfyService.deleteMessage(messageID);
-    			break;
-    		case "/edit":
-    			break;
-    		}
-	    	return;	
-    	}
 
         if (command == null) {
             // the message body
@@ -106,7 +95,7 @@ public class MessageServlet extends HttpServlet {
             response.getWriter().println(message);
         } else if (command.equals("/delete")) {
             long messageID = Long.parseLong(request.getParameter("id"));
-            // OfyService.deleteMessage(messageID);
+            OfyService.deleteMessage(messageID);
         } else if (command.equals("/edit")) {
             long messageID = Long.parseLong(request.getParameter("id"));
         }
