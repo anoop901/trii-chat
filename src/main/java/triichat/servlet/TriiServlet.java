@@ -100,8 +100,12 @@ public class TriiServlet extends HttpServlet {
             Long triiId = Long.parseLong(req.getParameter("id"));
             OfyService.deleteTrii(triiId);
         } else if (command.equals("/edit")) {
-            // TODO: edit the trii
+            // TODO: Hook this up to an edit button on the client ui
             Long triiId = Long.parseLong(req.getParameter("id"));
+            String triiName = req.getParameter("name");
+
+            Trii trii = OfyService.loadTrii(triiId);
+            trii.setName(triiName);
         }
     }
 }
