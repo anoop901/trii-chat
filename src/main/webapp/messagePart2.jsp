@@ -21,7 +21,7 @@ function createMessageView(messages){
     form.append( textbox, submit );
     form.submit(function(e){
     	e.preventDefault();
-    	  var posting = $.post( '/message', { body: textbox.val(), trii_id: triiID }, 
+    	  var posting = $.post( '/message', { body: textbox.val(), trii_id: selectedTriiID }, 
     			  function(message) {
     				  addMessage(message);
     				  textbox.val("");
