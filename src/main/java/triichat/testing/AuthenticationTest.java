@@ -14,6 +14,11 @@ import org.junit.Before;
 import org.junit.Test;
 import triichat.db.OfyService;
 
+/**
+ * Adapted from GAE's example tests.
+ * Tests that triichat.user can be made from a Google accounts user
+ *
+ */
 public class AuthenticationTest {
     private static final String OAUTH_CONSUMER_KEY = "notexample.com";
     private static final String OAUTH_EMAIL = "bozo@clown.com";
@@ -53,13 +58,14 @@ public class AuthenticationTest {
     @Before
     public void setUp() {
         helper.setUp();
-        OfyService ofyService = new OfyService();
+        OfyService ofyService = new OfyService(); //makes sure to register classes
         closeable = ObjectifyService.begin();
     }
 
     @After
     public void tearDown() {
         helper.tearDown();
+        closeable.close();
     }
 
     @Test
@@ -93,7 +99,14 @@ public class AuthenticationTest {
     public void testUserCreation(){
         UserService userService = UserServiceFactory.getUserService();
         com.google.appengine.api.users.User gUser = userService.getCurrentUser();
-        triichat.model.User.createUser(gUser);
+        assertNotNull(triichat.model.User.createUser(gUser));
     }
 
+    @Test
+    public void testUserFindByEmail(){
+        UserService userService = UserServiceFactory.getUserService();
+        com.google.appengine.api.users.User gUser = userService.getCurrentUser();
+        triichat.model.User.createUser(gUser);
+        assertNotNull(triichat.model.User.findUserByEmail(gUser.getEmail()));
+    }
 }
