@@ -54,7 +54,9 @@ public class User {
      * @return the newly instantiated and stored UserServlet
      */
     public static User createUser(com.google.appengine.api.users.User user) {
-        User made = new User();
+		User made = findUser(user);
+		if(made != null){return made;}
+		made = new User();
 		if(user.getUserId() == null){
 			made.id = user.getEmail();
 		}else{
@@ -158,6 +160,7 @@ public class User {
 	 */
 	public static User findUser(com.google.appengine.api.users.User user){
 		String toFind = user.getUserId();
+		if(toFind == null){toFind = user.getEmail();}
 		Result<User> found = OfyService.ofy().load().type(User.class).id(toFind);
 		if(found == null){ 
 			return null;
