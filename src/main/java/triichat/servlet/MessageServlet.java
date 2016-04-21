@@ -74,6 +74,9 @@ public class MessageServlet extends HttpServlet {
             if (parentMessageID != null) {
                 Message parent = OfyService.loadMessage(parentMessageID);
                 parents.add(parent);
+            }else{//use a default parent (the most recent) if none defined
+                Message parent = getMostRecent(trii);
+                parents.add(parent);
             }
 
             // Create message
@@ -106,7 +109,7 @@ public class MessageServlet extends HttpServlet {
         if(all.isEmpty()){return null;}
         Message retval = trii.getRoot();
         for(Message m : all){
-            if(retval.getTimeStamp().after(m.getTimeStamp())){
+            if(m.getTimeStamp().after(retval.getTimeStamp())){
                 retval = m;
             }
         }
