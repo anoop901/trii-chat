@@ -16,7 +16,7 @@ import triichat.db.OfyService;
  * Created by Margret on 3/8/2016.
  */
 @Entity
-public class Message {
+public class Message implements Comparable{
 	@Id private Long id;
     private String content;
     @Load private Set<Ref<Message>> parents;
@@ -33,7 +33,7 @@ public class Message {
 		this.author = null;
 		this.holder = null;
 	}
-    
+
     /**
      * Creates and saves message to datastore and associated trii
      * @param content
@@ -185,5 +185,26 @@ public class Message {
         }
 
         return retval;
+	}
+
+	@Override
+	public boolean equals(Object o){
+		Message that = (Message) o;
+		if(!this.getId().equals(that.getId())){return false;}
+		return true;
+	}
+
+	@Override
+	/**
+	 * @see compareTo()
+	 * Returns negative if o is timestamped before this.
+	 * Returns positive if o is timestamped after this.
+	 */
+	public int compareTo(Object o) {
+		Message that = (Message) o;
+		if(this.equals(that)){return 0;}
+		if(this.getTimeStamp().before(that.getTimeStamp())){return -1;}
+		if(this.getTimeStamp().after(that.getTimeStamp())){return 1;}
+		return 0;
 	}
 }

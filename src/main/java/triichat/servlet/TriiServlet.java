@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,8 +38,9 @@ public class TriiServlet extends HttpServlet {
 
         Trii currentTrii = OfyService.loadTrii(triiID);
 
-        Set<Message> messageSet = currentTrii.getMessages();
-
+        Set<Message>  temp = currentTrii.getMessages();
+        List<Message> messageSet = new ArrayList<Message>(temp);
+        Collections.sort(messageSet);
         for(Message m : messageSet)
             messages.put(m.getId());
 
