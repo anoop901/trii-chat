@@ -4,6 +4,7 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,12 +32,22 @@ public class MessageServlet extends HttpServlet {
         
         response.setContentType("application/json");  
         JSONObject message = new JSONObject();
-
+        JSONArray parents = new JSONArray();
+        for(Message p : triiMessage.getParents()){
+            parents.put(p.getId());
+        }
+        JSONArray replies = new JSONArray();
+        for(Message r : triiMessage.getReplies()){
+            replies.put(r.getId());
+        }
         // TODO: test this
         try {
         	message.put("id", messageID);
             message.put("author", triiMessage.getAuthor().getId());
             message.put("body", triiMessage.getContent());
+            message.put("timestamp", triiMessage.getTimeStamp());
+            message.put("parents", parents);
+            message.put("replies", replies);
         } catch (JSONException e) {
             e.printStackTrace();
         }
