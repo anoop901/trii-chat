@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,10 +38,30 @@ public class TriiServlet extends HttpServlet {
 
         Trii currentTrii = OfyService.loadTrii(triiID);
 
-        Set<Message> messageSet = currentTrii.getMessages();
-
+        Set<Message>  temp = currentTrii.getMessages();
+        List<Message> messageSet = new ArrayList<Message>(temp);
+        Collections.sort(messageSet);
+        JSONObject message = new JSONObject();
         for(Message m : messageSet)
-            messages.put(m.getId());
+            try{
+                JSONArray parents = new JSONArray();
+                for(Message p : m.getParents()){
+                    parents.put(p.getId());
+                }
+                JSONArray replies = new JSONArray();
+                for(Message r : m.getReplies()){
+                    replies.put(r.getId());
+                }
+                message.put("id", m.getId());
+                message.put("author", m.getAuthor().getId());
+                message.put("body", m.getContent());
+                message.put("timestamp", m.getTimeStamp());
+                message.put("parents", parents);
+                message.put("replies", replies);
+                messages.put(message);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         try {
         	trii.put("id", triiID);

@@ -114,7 +114,11 @@ public class Group {
         }
         return retval;
     }
-    
+
+    public void setName(String name){
+        this.name = name;
+        OfyService.save(this);
+    }
     public String getName(){
     	return this.name;
     }

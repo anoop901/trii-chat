@@ -36,18 +36,15 @@
 			      if (users.length > 0) {
 			          // randomly choose a user
 			          var userID = users[Math.floor(Math.random() * users.length)];
-			          $.get('/add-user-to-group', {user: userID, group: selectedGroupID});
+			          $.get('/add-user-to-group', {user: userID, group: selectedGroupID})
+			          	  .done(function( user ) {
+							  addMember(user);
+							  $('#addMember').removeClass('visible');
+			        	  }, "json");
 			      } else {
 			          window.alert("There is no user with the name " + username);
 			      }
  			  });
-			  // Send the data using post
-			  var posting = $.post( url, data );
-			  // Put the results in a div
-			  posting.done(function( user ) {
-				  addMember(user);
-				  $('#addMember').removeClass('visible');
-			  });
 			});
 		  </script> 
 		</form>
