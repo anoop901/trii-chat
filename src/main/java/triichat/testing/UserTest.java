@@ -9,8 +9,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import triichat.db.OfyService;
+import triichat.model.Group;
 import triichat.model.User;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -133,4 +135,22 @@ public class UserTest {
         }
         assertTrue(match);
     }
+
+    @Test
+    public void testCreateGroup(){
+        Set<User> users = new HashSet<>();
+        users.add(theUser);
+        Group made = Group.createGroup("group1",users);
+        assertNotNull(made);
+        Set<Group> groups = theUser.getGroups();
+        assertFalse(groups.isEmpty());
+        boolean match = false;
+        for(Group g : groups){
+            if(g.getId().equals(made.getId())){
+                match = true;
+            }
+        }
+        assertTrue(match);
+    }
+
 }
