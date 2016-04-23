@@ -62,26 +62,6 @@
 <%@ include file="memberPart.jsp" %>
     
 <script>
-$(document).ready(function () {
-    addUserToGroupButtonElem.click(function (e) {
-
-        var newUserName = window.prompt("Who do you want to add to this group?");
-
-        // search for any users with this name
-        $.getJSON('/username-search', {name: newUserName}, function (searchResults) {
-            var users = searchResults['users'];
-            // TODO: in case of multiple results allow the user to actually choose a user somehow, instead of random choice
-            if (users.length > 0) {
-                // randomly choose a user
-                var userID = users[Math.floor(Math.random() * users.length)];
-                $.get('/add-user-to-group', {user: userID, group: selectedGroupID});
-            } else {
-                window.alert("There is no user with the name " + newUserName);
-            }
-        });
-    });	
-});
-
 function addGroup(group){
 	// create the <li> element containing this group's name
     var liElem = $('<li>');
