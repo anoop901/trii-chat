@@ -9,6 +9,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import triichat.db.OfyService;
+import triichat.model.User;
+
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -38,7 +42,7 @@ public class UserTest {
                     .setEnvAuthDomain(ENV_AUTH_DOMAIN)
             ;
     Closeable closeable;
-
+    User theUser;
     @Before
     public void setUp() {
         helper.setUp();
@@ -46,6 +50,7 @@ public class UserTest {
         closeable = ObjectifyService.begin();
         UserService userService = UserServiceFactory.getUserService();
         com.google.appengine.api.users.User gUser = userService.getCurrentUser();
+        theUser = User.createUser(gUser);
     }
 
     @After
@@ -57,61 +62,75 @@ public class UserTest {
 
     @Test
     public void testSetName() throws Exception {
-
+        theUser.setName("test");
+        assertTrue(theUser.getName().equals("test"));
     }
 
     @Test
     public void testGetEmail() throws Exception {
-
+        assertTrue(theUser.getEmail().equals(ENV_EMAIL));
     }
 
     @Test
     public void testSetEmail() throws Exception {
-
+        theUser.setEmail("test@email.com");
+        assertTrue(theUser.getEmail().equals("test@email.com"));
     }
 
-    @Test
-    public void testGetName() throws Exception {
-
-    }
 
     @Test
     public void testGetFederatedId() throws Exception {
-
+        assertNotNull(theUser.getFederatedId());
     }
 
     @Test
     public void testGetAuthDomain() throws Exception {
-
+        assertNotNull(theUser.getAuthDomain());
     }
 
     @Test
     public void testGetContacts() throws Exception {
-
+        Set<User> found = theUser.getContacts();
+        assertNotNull(found);
+        assertTrue(found.isEmpty());
     }
 
     @Test
     public void testAddContact() throws Exception {
-
-    }
-
-    @Test
-    public void testGetId() throws Exception {
-
+        fail();
     }
 
     @Test
     public void testFindUser() throws Exception {
-
+        UserService userService = UserServiceFactory.getUserService();
+        com.google.appengine.api.users.User gUser = userService.getCurrentUser();
+        User found = User.findUser(gUser);
+        assertNotNull(found);
     }
 
     @Test
     public void testFindUserByName() throws Exception {
-
+        List<User> found = User.findUserByName(theUser.getName());
+        assertFalse(found.isEmpty());
+        boolean match = false;
+        for(User u : found){
+            if(u.getId().equals(theUser.getId())){
+                match = true;
+            }
+        }
+        assertTrue(match);
     }
 
     @Test
     public void testFindUserByEmail() throws Exception {
-
+        List<User> found = User.findUserByEmail(theUser.getEmail());
+        assertFalse(found.isEmpty());
+        boolean match = false;
+        for(User u : found){
+            if(u.getId().equals(theUser.getId())){
+                match = true;
+            }
+        }
+        assertTrue(match);
     }
 }
