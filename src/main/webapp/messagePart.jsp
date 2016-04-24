@@ -27,12 +27,14 @@ function createMessageView(messages){
 
     // iterate through list of messages
     for (var i = 0; i < messages.length; i++) {
-        var messageID = messages[i];
+//        var messageID = messages[i];
+//
+//        // get this messages's author and body
+//        $.getJSON('/message', {id: messageID}, (function (messageID, message) {
+//			addMessage(message);
+//        }).bind(undefined, messageID));
 
-        // get this messages's author and body
-        $.getJSON('/message', {id: messageID}, (function (messageID, message) {
-			addMessage(message);
-        }).bind(undefined, messageID));
+        addMessage(messages[i]);
     }
 }
 
@@ -43,6 +45,10 @@ function addMessage(message){
     var contentElem = $('<div>', {class:"message my-message"});
 
     authorElem.text(message['author']);
+    $.get('/user', {id: message['author']}, function (user) {
+        authorElem.text(user.name);
+    });
+
     contentElem.text(message['body']);
     dataElem.append(authorElem);
     liElem.append(dataElem, contentElem);
