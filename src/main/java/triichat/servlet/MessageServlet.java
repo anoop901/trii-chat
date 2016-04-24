@@ -87,7 +87,7 @@ public class MessageServlet extends HttpServlet {
                 parents.add(parent);
             }else{//use a default parent (the most recent) if none defined
                 Message parent = getMostRecent(trii);
-                parents.add(parent);
+                if(parent != null){parents.add(parent);}
             }
 
             // Create message

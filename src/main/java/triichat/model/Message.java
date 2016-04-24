@@ -45,7 +45,7 @@ public class Message implements Comparable{
 		Message retval = new Message(content,parents,author,trii);
 		if(!parents.isEmpty()){
 			for(Message p : parents){
-				p.addReply(retval);
+				if(p != null)p.addReply(retval);
 			}
 		}
 		trii.addMessage(retval);
