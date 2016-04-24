@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Documentation of the client/server interface is in ClientServerInterface.txt
  * Created by anoop on 3/30/16.
  */
 public class TriiServlet extends HttpServlet {

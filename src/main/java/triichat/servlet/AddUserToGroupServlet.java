@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Requests should have "user" parameter of user id of user to add (which is a string)
- * and "group" parameter of group to add to (which is a number (long))
+ * Documentation of the client/server interface is in ClientServerInterface.txt
  * Created by anoop on 4/9/16.
  */
 public class AddUserToGroupServlet extends HttpServlet {

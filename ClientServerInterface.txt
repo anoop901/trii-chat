@@ -10,6 +10,8 @@ Returns the specified group's ID, name, IDs of contained triis, and IDs of conta
 
 POST /group?name=GROUP-NAME
 Creates a group with the given name containing only the logged-in user and no triis.
+Returns the new group's ID, name, IDs of contained triis, and IDs of contained members in this format:
+{"id": GROUP-ID , "name": "GROUP-NAME" , "triis": [TRII-ID, ...], "members": [USER-ID, ...]}
 
 [unimplemented]
 POST /group/delete?id=GROUP-ID
@@ -18,9 +20,12 @@ Deletes the specified group.
 GET /trii?id=TRII-ID
 Returns the specified trii's ID, name, and IDs of all contained messages in this format:
 {"id": TRII-ID, "name": "TRII-NAME", "messages": [{"id": MESSAGE-ID, "author": USER-ID, "body": "CONTENT", "timestamp": "TIMESTAMP", "parents": [MESSAGE_ID,...], "replies": [MESSAGE_ID,...]}, ...]}
+NOTE: the TIMESTAMP is a string containing a calendar date
 
 POST /trii?name=TRII-NAME&group=GROUP-ID
 Creates a trii in the specified group with the given name containing no messages.
+Returns the new trii's ID, name, and IDs of all contained messages in this format:
+{"id": TRII-ID, "name": "TRII-NAME", "messages": [MESSAGE-ID, ...]}
 
 [unimplemented]
 POST /trii/delete?id=TRII-ID
@@ -31,11 +36,15 @@ POST /trii/edit?id=TRII-ID
 tbh I'm not sure what this is really for. -Anoop
 
 GET /message?id=MESSAGE-ID
-Returns the specified message's ID, author's ID, and content in this format:
+Returns the specified message's ID, author's ID, content, timestamp, parents, and replies in this format:
 {"id": MESSAGE-ID, "author": USER-ID, "body": "CONTENT", "timestamp": "TIMESTAMP", "parents": [MESSAGE_ID,...], "replies": [MESSAGE_ID,...]}
+NOTE: the TIMESTAMP is a string containing a calendar date
 
 POST /message?body=CONTENT&trii_id=TRII-ID
 Creates a message with the given content, in the specified tree, with no parents.
+Returns the specified message's ID, author's ID, and content in this format:
+{"id": MESSAGE-ID, "author": USER-ID, "body": "CONTENT", "timestamp": "TIMESTAMP", "parents": [MESSAGE_ID,...], "replies": [MESSAGE_ID,...]}
+NOTE: the TIMESTAMP is a string containing a calendar date
 
 POST /message?body=CONTENT&trii_id=TRII-ID&parent_id=MESSAGE-ID
 Creates a message with the given content, in the specified tree, with the specified parent message.
