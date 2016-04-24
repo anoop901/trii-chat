@@ -21,6 +21,8 @@ import static org.junit.Assert.*;
 
 /**
  * Created by Margret on 4/21/2016.
+ * Creation of a Trii in a Group is tested in GroupTest.
+ * TriiTest tests correctness of that creation.
  */
 public class TriiTest {
 
@@ -110,6 +112,10 @@ public class TriiTest {
         Set<Message> messages = theTrii.getMessages();
         assertNotNull(messages);
         assertTrue(messages.isEmpty());
+    }
+
+    @Test
+    public void testGetRootEmpty(){
         assertNull(theTrii.getRoot());
     }
 
@@ -118,7 +124,9 @@ public class TriiTest {
         Message first = Message.createMessage("First", new HashSet<Message>(), theUser, theTrii);
         assertNotNull(first);
         Message found = theTrii.getRoot();
+        //Check that root==first
         assertTrue(found.getId().equals(first.getId()));
+        //Check that first is in set of messages
         Set<Message> foundSet = theTrii.getMessages();
         boolean match = false;
         for(Message m : foundSet){
@@ -127,6 +135,7 @@ public class TriiTest {
             }
         }
         assertTrue(match);
+        //Check that Message has correct reference to Trii
         Trii fromMessage = first.getTrii();
         assertNotNull(fromMessage);
         assertTrue(fromMessage.getId().equals(theTrii.getId()));
