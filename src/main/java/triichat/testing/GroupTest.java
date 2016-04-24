@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import triichat.db.OfyService;
 import triichat.model.Group;
+import triichat.model.Trii;
 import triichat.model.User;
 
 import java.util.HashSet;
@@ -85,7 +86,29 @@ public class GroupTest {
 
     @Test
     public void testSetName(){
-        fail()
+        theGroup.setName("test");
+        assertTrue(theGroup.getName().equals("test"));
+    }
+
+    @Test
+    public void testGetTriis(){
+        Set<Trii> triis = theGroup.getTriis();
+        assertNotNull(triis);
+        assertTrue(triis.isEmpty());
+    }
+
+    @Test
+    public void testGetUsers(){
+        Set<User> users = theGroup.getUsers();
+        assertNotNull(users);
+        assertFalse(users.isEmpty());
+        boolean match = false;
+        for(User u : users){
+            if(u.getId().equals(theUser.getId())){
+                match = true;
+            }
+        }
+        assertTrue(match);
     }
 
 }
