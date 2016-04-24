@@ -10,11 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 import triichat.db.OfyService;
 import triichat.model.Group;
+import triichat.model.Message;
 import triichat.model.Trii;
 import triichat.model.User;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -22,13 +22,16 @@ import static org.junit.Assert.*;
 /**
  * Created by Margret on 4/21/2016.
  */
-public class GroupTest {
+public class TriiTest {
 
     private static final String ENV_EMAIL = "bozo1@clown.com";
     private static final String ENV_USER_ID = "bozo1";
     private static final String ENV_AUTH_DOMAIN = "clown1.com";
     private static final boolean ENV_IS_ADMIN = true;
+
     private static final String GROUP_NAME = "group1";
+
+    private static final String TRII_NAME = "trii1";
 
     private final LocalUserServiceTestConfig userConfig = new LocalUserServiceTestConfig();
     private final LocalDatastoreServiceTestConfig dbConfig = new LocalDatastoreServiceTestConfig();
@@ -48,6 +51,7 @@ public class GroupTest {
     Closeable closeable;
     User theUser;
     Group theGroup;
+    Trii theTrii;
     @Before
     public void setUp() {
         helper.setUp();
@@ -71,6 +75,8 @@ public class GroupTest {
             }
         }
         assertTrue(match);
+        theTrii = Trii.createTrii(TRII_NAME, theGroup);
+        assertNotNull(theTrii);
     }
 
     @After
@@ -81,77 +87,48 @@ public class GroupTest {
 
     @Test
     public void testGetName(){
-        assertTrue(theGroup.getName().equals(GROUP_NAME));
+        assertTrue(theTrii.getName().equals(TRII_NAME));
     }
 
     @Test
     public void testSetName(){
-        theGroup.setName("test");
-        assertTrue(theGroup.getName().equals("test"));
+        theTrii.setName("test");
+        assertTrue(theTrii.getName().equals("test"));
     }
 
     @Test
-    public void testGetTriisWhenEmpty(){
-        Set<Trii> triis = theGroup.getTriis();
-        assertNotNull(triis);
-        assertTrue(triis.isEmpty());
-    }
-
-    @Test
-    public void testGetUsers(){
-        Set<User> users = theGroup.getUsers();
-        assertNotNull(users);
-        assertFalse(users.isEmpty());
-        boolean match = false;
-        for(User u : users){
-            if(u.getId().equals(theUser.getId())){
-                match = true;
-            }
-        }
-        assertTrue(match);
-    }
-
-    @Test
-    public void testGetUsersHaveGroup(){
-        Set<Group> groups = theUser.getGroups();
-        boolean match = false;
-        assertNotNull(groups);
-        assertFalse(groups.isEmpty());
-        for(Group g : groups){
-            if(g.getId().equals(theGroup.getId())){
-                match = true;
-            }
-        }
-        assertTrue(match);
-    }
-
-    @Test
-    public void testCreateTrii(){
-        Trii trii = Trii.createTrii("trii1", theGroup);
-        assertNotNull(trii);
-        Group group = trii.getGroup();
+    public void testGetGroup(){
+        Group group = theTrii.getGroup();
         assertTrue(group.getId().equals(theGroup.getId()));
-        Set<Trii> triiSet = theGroup.getTriis();
-        assertNotNull(triiSet);
-        assertFalse(triiSet.isEmpty());
+        Trii foundTrii = theGroup.getTrii(TRII_NAME);
+        assertNotNull(foundTrii);
+        assertTrue(foundTrii.getId().equals(theTrii.getId()));
+    }
+
+    @Test
+    public void testGetMessagesEmpty(){
+        Set<Message> messages = theTrii.getMessages();
+        assertNotNull(messages);
+        assertTrue(messages.isEmpty());
+    }
+
+    @Test
+    public void testCreateFirstMessage(){
+        Message first = Message.createMessage("First", new HashSet<Message>(), theUser, theTrii);
+        assertNotNull(first);
+        Message found = theTrii.getRoot();
+        assertTrue(found.getId().equals(first.getId()));
+        Set<Message> foundSet = theTrii.getMessages();
         boolean match = false;
-        for(Trii t : triiSet){
-            if(t.getId().equals(trii.getId())){
+        for(Message m : foundSet){
+            if(m.getId().equals(first.getId())){
                 match = true;
             }
         }
         assertTrue(match);
-    }
-
-    @Test
-    public void testGetTriiByName(){
-        String triiName = "trii1";
-        Trii trii = Trii.createTrii(triiName, theGroup);
-        assertNotNull(trii);
-        Group group = trii.getGroup();
-        assertTrue(group.getId().equals(theGroup.getId()));
-        Trii found = theGroup.getTrii(triiName);
-        assertTrue(found.getId().equals(trii.getId()));
+        Trii fromMessage = first.getTrii();
+        assertNotNull(fromMessage);
+        assertTrue(fromMessage.getId().equals(theTrii.getId()));
     }
 
 }
