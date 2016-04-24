@@ -41,6 +41,14 @@ public class TriiServlet extends HttpServlet {
         Set<Message>  temp = currentTrii.getMessages();
         List<Message> messageSet = new ArrayList<Message>(temp);
         Collections.sort(messageSet);
+        //TODO: pick one way of sending trii's messages
+        //messages part is just ids - the old way
+        /*
+        for(Message m : messageSet){
+            messages.put(m.getId());
+        }
+        */
+        //messages part is all the parts of a message
         for(Message m : messageSet)
             try{
                 JSONObject message = new JSONObject();
