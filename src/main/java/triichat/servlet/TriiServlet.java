@@ -41,9 +41,9 @@ public class TriiServlet extends HttpServlet {
         Set<Message>  temp = currentTrii.getMessages();
         List<Message> messageSet = new ArrayList<Message>(temp);
         Collections.sort(messageSet);
-        JSONObject message = new JSONObject();
         for(Message m : messageSet)
             try{
+                JSONObject message = new JSONObject();
                 JSONArray parents = new JSONArray();
                 for(Message p : m.getParents()){
                     parents.put(p.getId());
