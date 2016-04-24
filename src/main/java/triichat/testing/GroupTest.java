@@ -91,7 +91,7 @@ public class GroupTest {
     }
 
     @Test
-    public void testGetTriis(){
+    public void testGetTriisWhenEmpty(){
         Set<Trii> triis = theGroup.getTriis();
         assertNotNull(triis);
         assertTrue(triis.isEmpty());
@@ -109,6 +109,49 @@ public class GroupTest {
             }
         }
         assertTrue(match);
+    }
+
+    @Test
+    public void testGetUsersHaveGroup(){
+        Set<Group> groups = theUser.getGroups();
+        boolean match = false;
+        assertNotNull(groups);
+        assertFalse(groups.isEmpty());
+        for(Group g : groups){
+            if(g.getId().equals(theGroup.getId())){
+                match = true;
+            }
+        }
+        assertTrue(match);
+    }
+
+    @Test
+    public void testCreateTrii(){
+        Trii trii = Trii.createTrii("trii1", theGroup);
+        assertNotNull(trii);
+        Group group = trii.getGroup();
+        assertTrue(group.getId().equals(theGroup.getId()));
+        Set<Trii> triiSet = theGroup.getTriis();
+        assertNotNull(triiSet);
+        assertFalse(triiSet.isEmpty());
+        boolean match = false;
+        for(Trii t : triiSet){
+            if(t.getId().equals(trii.getId())){
+                match = true;
+            }
+        }
+        assertTrue(match);
+    }
+
+    @Test
+    public void testGetTriiByName(){
+        String triiName = "trii1";
+        Trii trii = Trii.createTrii(triiName, theGroup);
+        assertNotNull(trii);
+        Group group = trii.getGroup();
+        assertTrue(group.getId().equals(theGroup.getId()));
+        Trii found = theGroup.getTrii(triiName);
+        assertTrue(found.getId().equals(trii.getId()));
     }
 
 }

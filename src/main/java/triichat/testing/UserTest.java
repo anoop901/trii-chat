@@ -151,6 +151,14 @@ public class UserTest {
             }
         }
         assertTrue(match);
+        users = made.getUsers();
+        match = false;
+        for(User u : users){
+            if(u.getId().equals(theUser.getId())){
+                match = true;
+            }
+        }
+        assertTrue(match);
     }
 
 }
