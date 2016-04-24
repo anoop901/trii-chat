@@ -110,6 +110,7 @@ public class TriiTest {
         Set<Message> messages = theTrii.getMessages();
         assertNotNull(messages);
         assertTrue(messages.isEmpty());
+        assertNull(theTrii.getRoot());
     }
 
     @Test
