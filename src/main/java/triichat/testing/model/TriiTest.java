@@ -1,4 +1,4 @@
-package triichat.testing;
+package triichat.testing.model;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;

@@ -1,4 +1,4 @@
-package triichat.testing;
+package triichat.testing.model;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

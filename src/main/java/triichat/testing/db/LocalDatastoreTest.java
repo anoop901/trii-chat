@@ -1,4 +1,4 @@
-package triichat.testing;
+package triichat.testing.db;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static org.junit.Assert.assertEquals;
