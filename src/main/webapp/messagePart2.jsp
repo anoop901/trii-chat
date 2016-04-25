@@ -30,16 +30,18 @@ function createMessageView(messages){
     $('#trii-messages').append( button, table, form );
     
 
+    createMessages();
+    
     // iterate through list of messages
     for (var i = 0; i < messages.length; i++) {
-        var messageID = messages[i];
-
-        // get this messages's author and body
-        $.getJSON('/message', {id: messageID}, (function (messageID, message) {
-			addMessage(message);
-        }).bind(undefined, messageID));
+        //        var messageID = messages[i];
+        //
+		//      // get this messages's author and body
+		//      $.getJSON('/message', {id: messageID}, (function (messageID, message) {
+		//			addMessage(message);
+		//      }).bind(undefined, messageID));
+      	addMessage(messages[i]);
     }
-    createMessages();
 }
 
 </script>
