@@ -61,8 +61,9 @@ public class Group {
      * @param user
      */
     public void addUser(User user){
-        if(this.users.add(user.getRef()))
-            OfyService.save(this);
+        this.users.add(user.getRef());
+        user.addGroup(this);
+        OfyService.save(this);
     }
 
     /**

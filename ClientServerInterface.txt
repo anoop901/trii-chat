@@ -17,7 +17,7 @@ Deletes the specified group.
 
 GET /trii?id=TRII-ID
 Returns the specified trii's ID, name, and IDs of all contained messages in this format:
-{"id": TRII-ID, "name": "TRII-NAME", "messages": [MESSAGE-ID, ...]}
+{"id": TRII-ID, "name": "TRII-NAME", "messages": [{"id": MESSAGE-ID, "author": USER-ID, "body": "CONTENT", "timestamp": "TIMESTAMP", "parents": [MESSAGE_ID,...], "relies": [MESSAGE_ID,...]}, ...]}
 
 POST /trii?name=TRII-NAME&group=GROUP-ID
 Creates a trii in the specified group with the given name containing no messages.
@@ -32,7 +32,7 @@ tbh I'm not sure what this is really for. -Anoop
 
 GET /message?id=MESSAGE-ID
 Returns the specified message's ID, author's ID, and content in this format:
-{"id": MESSAGE-ID, "author": USER-ID, "body": "CONTENT"}
+{"id": MESSAGE-ID, "author": USER-ID, "body": "CONTENT", "timestamp": "TIMESTAMP", "parents": [MESSAGE_ID,...], "relies": [MESSAGE_ID,...]}
 
 POST /message?body=CONTENT&trii_id=TRII-ID
 Creates a message with the given content, in the specified tree, with no parents.
