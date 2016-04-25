@@ -54,8 +54,11 @@ public class User {
      * @return the newly instantiated and stored UserServlet
      */
     public static User createUser(com.google.appengine.api.users.User user) {
+		//try finding first
 		User made = findUser(user);
-		if(made != null){return made;}
+		if(made != null){
+			return made;
+		}
 		made = new User();
 		if(user.getUserId() == null){
 			made.id = user.getEmail();
