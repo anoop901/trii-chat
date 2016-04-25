@@ -50,7 +50,7 @@
     </div>    
 </div>
 
-<%@ include file="messagePart.jsp" %>
+<%@ include file="messagePart2.jsp" %>
     
 <script>
 
