@@ -123,7 +123,7 @@ function link(source, target) {
 }
 
 var members = [
-    member('Founder & Chairman', 'Pierre Omidyar', '/images/demos/orgchart/male.png', '#31d0c6'),
+    member('Founder & Chairman', 'Pierre Omidyar', '', '#31d0c6'),
     member('President & CEO', 'Margaret C. Whitman', '/images/demos/orgchart/female.png', '#31d0c6'),
     member('President, PayPal', 'Scott Thompson', '/images/demos/orgchart/male.png', '#7c68fc'),
     member('President, Ebay Global Marketplaces' , 'Devin Wenig', '/images/demos/orgchart/male.png', '#7c68fc'),
@@ -270,7 +270,7 @@ function createMessages() {
     paperScroller.$el.css({ width: '100%', height: '66%' }).appendTo('#paper-holder');
 
     //graph.resetCells(cells);
-    graph.resetCells([members[0]]);
+    graph.resetCells();
     
     graphLayout = new joint.layout.TreeLayout({
         graph: graph,
@@ -398,8 +398,14 @@ var directionPicker = new joint.ui.SelectBox({
 $('#orgchart-direction').append(directionPicker.render().el);
 
 function addMessage(message) {
-	var newMember = member(message['author'], message['body'], '/images/demos/orgchart/female.png', '#c6c7e2');
-    var newConnection = link(members[0], newMember);
-    graph.addCells([newMember, newConnection]);
+	var newMember = member(message['author'], message['body'], '', '#c6c7e2');
+    var newConnections = [];
+    for (var i = 0; i < message['parents'].length; i++) {
+        var parentID = message['parents'][i];
+        newConnections.push(link(graph.getLastCell(),newMember));
+    }
+    graph.addCell(newMember);
+    if(newConnections.length)
+    	graph.addCells(newConnections);
     graphLayout.prepare().layout();
 }
