@@ -98,23 +98,27 @@ function addTrii(trii){
 
 function clickedTrii(triiID) {
 	if(triiID != selectedTriiID){
-	    // get trii info
-	    $.getJSON('/trii', {id: triiID}, function (trii) {
-	
-	        selectedTriiID = triiID;
-	
-	        $('#trii-name').text(trii['name']);
-	
-	        triiMessagesElem.empty();
-	        createMessageView(trii['messages']);
-	        triiMessagesElem = $('#trii-messages');
-	
-	    }).fail(function () {
-	        // display an error message
-	        triiListElem.empty();
-	        triiErrorElem.text('[failed to get trii]');
-	    });
+	    refreshTrii(triiID);
 	}
+}
+
+function refreshTrii(triiID) {
+    // get trii info
+    $.getJSON('/trii', {id: triiID}, function (trii) {
+
+        selectedTriiID = triiID;
+
+        $('#trii-name').text(trii['name']);
+
+        triiMessagesElem.empty();
+        createMessageView(trii['messages']);
+        triiMessagesElem = $('#trii-messages');
+
+    }).fail(function () {
+        // display an error message
+        triiListElem.empty();
+        triiErrorElem.text('[failed to get trii]');
+    });
 }
 
 function clearTriiSelection(){
@@ -122,5 +126,11 @@ function clearTriiSelection(){
     $('#trii-name').text('---');
     triiMessagesElem.empty();
 }
+
+window.setInterval(function () {
+    if (selectedTriiID !== undefined) {
+        refreshTrii(selectedTriiID);
+    }
+}, 10000);
 </script>
 </div>
