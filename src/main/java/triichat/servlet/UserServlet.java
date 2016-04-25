@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
+ * Documentation of the client/server interface is in ClientServerInterface.txt
  * Created by anoop on 3/30/16.
  */
 public class UserServlet extends HttpServlet {

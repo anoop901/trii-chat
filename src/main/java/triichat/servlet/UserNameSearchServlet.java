@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * Documentation of the client/server interface is in ClientServerInterface.txt
  * Created by Margret on 4/5/2016.
  */
 public class UserNameSearchServlet extends HttpServlet {
