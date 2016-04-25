@@ -28,6 +28,7 @@ public class AddUserToGroupServlet extends HttpServlet {
         User user = OfyService.loadUser(userID);
         if(group == null || user == null){
             //TODO: Error Message
+            System.out.println("ERROR: group or user is null");
             return;
         }
         group.addUser(user);
