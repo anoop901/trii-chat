@@ -11,7 +11,8 @@ import org.junit.runners.Suite.SuiteClasses;
         triichat.testing.model.GroupTest.class,
         triichat.testing.model.MessageTest.class,
         triichat.testing.model.TriiTest.class,
-        triichat.testing.model.UserTest.class
+        triichat.testing.model.UserTest.class,
+        triichat.testing.servlet.TriiServletTest.class
 })
 /**
  * Created by Margret on 4/25/2016.
