@@ -9,7 +9,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
         triichat.testing.servlet.ExampleServletTest.class,
         triichat.testing.servlet.MeServletTest.class,
-        triichat.testing.servlet.GroupServletTest.class
+        triichat.testing.servlet.GroupServletTest.class,
+        triichat.testing.servlet.UserServletTest.class
 })
 /**
  * Created by Margret on 4/25/2016.
