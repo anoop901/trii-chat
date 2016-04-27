@@ -153,4 +153,16 @@ public class Group {
             OfyService.save(user);
         }
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(!o.getClass().equals(this.getClass())){
+            return false;
+        }
+        Group that = (Group) o;
+        if(that.getId().equals(this.getId())){
+            return true;
+        }
+        return false;
+    }
 }

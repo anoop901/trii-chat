@@ -192,5 +192,17 @@ public class User {
 	public static List<User> findUserByEmail(String email){
 		return OfyService.ofy().load().type(User.class).filter("email", email).list();
 	}
+
+	@Override
+	public boolean equals(Object o){
+		if(!o.getClass().equals(this.getClass())){
+			return false;
+		}
+		User that = (User) o;
+		if(this.getId().equals(that.getId())){
+			return true;
+		}
+		return false;
+	}
 	
 }

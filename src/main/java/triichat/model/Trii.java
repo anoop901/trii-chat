@@ -131,4 +131,15 @@ public class Trii {
             OfyService.save(this);
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(!o.getClass().equals(this.getClass())){
+            return false;
+        }
+        Trii that = (Trii) o;
+        if(this.getId().equals(that.getId())){
+            return true;
+        }
+        return false;
+    }
 }
