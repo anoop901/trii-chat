@@ -21,6 +21,7 @@ import triichat.model.Group;
 import triichat.model.User;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -118,7 +119,54 @@ public class GroupServletTest extends TestCase{
         JSONObject json = new JSONObject(str);
         String retrievedName = json.getString("name");
         assertTrue(retrievedName.equals(groupName));
+
+        //check updated user
+        Group group = OfyService.loadGroup(json.getLong("id"));
+        assertNotNull(group);
+        Set<User> retUsers = group.getUsers();
+        assertNotNull(retUsers);
+        assertTrue(retUsers.size() == 1);
+        assertTrue(retUsers.contains(user));
     }
+
+    @Test
+    public void testMakeRandomNumberOfGroups() throws Exception{
+        UserService userService = UserServiceFactory.getUserService();
+        com.google.appengine.api.users.User gUser = userService.getCurrentUser();
+        User user = User.createUser(gUser);
+        assertNotNull(user);
+        Set<User> users = new HashSet<>(); users.add(user);
+        String req = LOCALHOST + GROUP_SERVLET_MAPPING;
+        ArrayList<Long> allGroupIds = new ArrayList<>();
+        for(int i = 0; i < max; i++){
+            String groupName = "GROUP" + i;
+            WebRequest webRequest = new PostMethodWebRequest(req);
+            webRequest.setParameter("name", groupName);
+            WebResponse response = servletRunner.getResponse(webRequest);
+            String str = convertStreamToString(response.getInputStream());
+            //Test that each group created successfully
+            assertNotNull(str);
+            assertFalse(str.isEmpty());
+            JSONObject json = new JSONObject(str);
+            String retrievedName = json.getString("name");
+            assertTrue(retrievedName.equals(groupName));
+            Long id = json.getLong("id");
+            assertNotNull(id);
+            allGroupIds.add(id);
+        }
+        //Test that all groups do exist
+        user = User.createUser(gUser);
+        Set<Group> usersGroups = user.getGroups();
+        for(Group g : usersGroups){
+            if(allGroupIds.contains(g.getId())){
+                allGroupIds.remove(g.getId());
+            }else{
+                fail();//since the user has a group that it shouldn't have
+            }
+        }
+        assertTrue(allGroupIds.isEmpty());//all ids should've been removed
+    }
+
     /**
      * http://stackoverflow.com/a/5445161
      * @param is - InputStream
