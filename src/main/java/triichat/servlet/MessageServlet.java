@@ -44,7 +44,7 @@ public class MessageServlet extends HttpServlet {
         // TODO: test this
         try {
         	message.put("id", messageID);
-            message.put("author", triiMessage.getAuthor().getId());
+            message.put("author", triiMessage.getAuthor().getName());
             message.put("body", triiMessage.getContent());
             message.put("timestamp", triiMessage.getTimeStamp());
             message.put("parents", parents);
@@ -101,7 +101,7 @@ public class MessageServlet extends HttpServlet {
             JSONObject message = new JSONObject();
             try {
                 message.put("id", newMessage.getId());
-                message.put("author", newMessage.getAuthor().getId());
+                message.put("author", newMessage.getAuthor().getName());
                 message.put("body", newMessage.getContent());
             } catch (JSONException e) {
                 e.printStackTrace();

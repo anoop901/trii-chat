@@ -62,7 +62,7 @@ public class TriiServlet extends HttpServlet {
                     replies.put(r.getId());
                 }
                 message.put("id", m.getId());
-                message.put("author", m.getAuthor().getId());
+                message.put("author", m.getAuthor().getName());
                 message.put("body", m.getContent());
                 message.put("timestamp", m.getTimeStamp());
                 message.put("parents", parents);
