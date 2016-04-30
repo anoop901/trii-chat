@@ -60,6 +60,7 @@ var addUserToGroupButtonElem = $('#add-user-to-group-button');
 // variables for current selections
 var selectedGroupID = undefined;
 var selectedTriiID = undefined;
+var selectedMessageIDs = [];
 
 $(document).ready(function () {
 
