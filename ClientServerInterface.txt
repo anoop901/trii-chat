@@ -42,12 +42,16 @@ NOTE: the TIMESTAMP is a string containing a calendar date
 
 POST /message?body=CONTENT&trii_id=TRII-ID
 Creates a message with the given content, in the specified tree, with no parents.
-Returns the specified message's ID, author's name, and content in this format:
+Returns the new message's ID, author's name, content, timestamp, parents, and replies in this format:
 {"id": MESSAGE-ID, "author": "USER-NAME", "body": "CONTENT", "timestamp": "TIMESTAMP", "parents": [MESSAGE_ID,...], "replies": [MESSAGE_ID,...]}
 NOTE: the TIMESTAMP is a string containing a calendar date
 
-POST /message?body=CONTENT&trii_id=TRII-ID&parent_id=MESSAGE-ID
-Creates a message with the given content, in the specified tree, with the specified parent message.
+POST /message?body=CONTENT&trii_id=TRII-ID&parent_id=MESSAGE-ID,MESSAGE-ID,...
+Creates a message with the given content, in the specified tree, with the specified parent messages. The parent messages
+must be integers separated by commas, with no spaces, and no commas at the beginning or end.
+Returns the new message's ID, author's name, content, timestamp, parents, and replies in this format:
+{"id": MESSAGE-ID, "author": "USER-NAME", "body": "CONTENT", "timestamp": "TIMESTAMP", "parents": [MESSAGE_ID,...], "replies": [MESSAGE_ID,...]}
+NOTE: the TIMESTAMP is a string containing a calendar date
 
 [unimplemented]
 POST /message/delete?id=MESSAGE-ID

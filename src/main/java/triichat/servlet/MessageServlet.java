@@ -67,8 +67,7 @@ public class MessageServlet extends HttpServlet {
             // the ID of the trii
             Long triiID = Long.parseLong(request.getParameter("trii_id"));
             // the ID of the parent message (as String and Long). both will be null if parameter is unspecified
-            String parentMessageIDStr = request.getParameter("parent_id");
-            Long parentMessageID = parentMessageIDStr == null ? null : Long.parseLong(parentMessageIDStr);
+            String parentMessageIDsStr = request.getParameter("parent_id");
 
             // get logged-in user
             UserService userService = UserServiceFactory.getUserService();
@@ -83,9 +82,13 @@ public class MessageServlet extends HttpServlet {
 
             // if parent_id parameter is specified,
             Set<Message> parents = new HashSet<Message>();
-            if (parentMessageID != null) {
-                Message parent = OfyService.loadMessage(parentMessageID);
-                parents.add(parent);
+            if (parentMessageIDsStr != null) {
+                for (String parentMessageIDStr : parentMessageIDsStr.split(",")) {
+                    Long parentMessageID = Long.parseLong(parentMessageIDStr);
+                    Message parent = OfyService.loadMessage(parentMessageID);
+                    parents.add(parent);
+                }
+
             }else{//use a default parent (the most recent) if none defined
                 Message parent = getMostRecent(trii);
                 if(parent != null){parents.add(parent);}
@@ -99,10 +102,18 @@ public class MessageServlet extends HttpServlet {
 
             response.setContentType("application/json");
             JSONObject message = new JSONObject();
+            JSONArray parentsJSON = new JSONArray();
+            for(Message p : parents){
+                parentsJSON.put(p.getId());
+            }
+            JSONArray repliesJSON = new JSONArray();
             try {
                 message.put("id", newMessage.getId());
                 message.put("author", newMessage.getAuthor().getName());
                 message.put("body", newMessage.getContent());
+                message.put("timestamp", newMessage.getTimeStamp());
+                message.put("parents", parentsJSON);
+                message.put("replies", repliesJSON);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
