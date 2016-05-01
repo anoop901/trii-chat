@@ -108,6 +108,11 @@ function link(source, target) {
     return cell;
 }
 
+function positionContent(){
+    $('.paper-scroller').css("padding-top", "5px");
+    $('.paper').css("margin-bottom", "5px");
+}
+
 var graph;
 var paper;
 var paperScroller;
@@ -148,28 +153,17 @@ function createMessages() {
 
     graphLayout.layout();
     paperScroller.centerContent();
-    $('.paper-scroller').css("padding-top", "5px");
-    $('.paper').css("margin-bottom", "5px");
+    positionContent();
     
     $('#btn-layout').on('click', function() {
 
         graphLayout.layout();
         paperScroller.centerContent();
-        $('.paper-scroller').css("padding-top", "5px");
-        $('.paper').css("margin-bottom", "5px");
-    });
-    
-    graph.on('change', function(cell) { 
-        graphLayout.layout();
-        paperScroller.centerContent();
-        $('.paper-scroller').css("padding-top", "5px");
-        $('.paper').css("margin-bottom", "5px");
+        positionContent();
     });
     
     
     //paperScroller.zoom(-0.3);
-    $('.paper-scroller').css("padding-top", "5px");
-    $('.paper').css("margin-bottom", "5px");
 
     paper.on('cell:pointerup', function(cellView, evt, x, y) {
     	if(V(evt.target).hasClass('selected')){
@@ -276,10 +270,18 @@ function createMessages() {
 function addMessage(message) {
 	var newMember = member(message['id'].toString(), message['author'], message['body'], '#c6c7e2', '');
     graph.addCell(newMember);
-    for (var i = 0; i < message['parents'].length; i++) {
+    if(message['parents'].length){
+	    var parentID = message['parents'][0];
+	    var parent = graph.getCell(parentID.toString());
+	    graph.addCell(link(parent,newMember));
+    }
+    graphLayout.prepare().layout();
+    for (var i = 1; i < message['parents'].length; i++) {
         var parentID = message['parents'][i];
         var parent = graph.getCell(parentID.toString());
         graph.addCell(link(parent,newMember));
     }
     graphLayout.prepare().layout();
+    positionContent();
+    
 }

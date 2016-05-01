@@ -19,6 +19,7 @@
 	 <link rel="stylesheet" href="stylesheets/layout.css">
 	 <link rel="stylesheet" href="stylesheets/rappid.min.css" />
      <link rel="stylesheet" type="text/css" href="stylesheets/message.css" />
+<!--      <script src='/_ah/channel/jsapi'></script> -->
 </head>
 <body>
 
@@ -62,10 +63,59 @@ var selectedGroupID = undefined;
 var selectedTriiID = undefined;
 var selectedMessageIDs = [];
 
+//channel variables
+var token; 
+var channel;
+var socket;
+
+sendMessage = function(path, opt_param) {
+// 	path += '?g=' + state.game_key;
+// 	if (opt_param) {
+// 	  path += '&' + opt_param;
+// 	}
+// 	var xhr = new XMLHttpRequest();
+// 	xhr.open('POST', path, true);
+// 	xhr.send();
+};
+moveInSquare = function(id) {
+// 	if (isMyMove() && state.board[id] == ' ') {
+// 		sendMessage('/move', 'i=' + id);
+// 	}
+}
+onOpened = function() {
+	connected = true;
+	sendMessage('opened');
+// 	updateBoard();
+};
+	
+onMessage = function(m) {
+//     newState = JSON.parse(m.data);
+//     state.board = newState.board || state.board;
+//     state.userX = newState.userX || state.userX;
+//     state.userO = newState.userO || state.userO;
+//     state.moveX = newState.moveX == 'true';
+//     state.winner = newState.winner || "";
+//     state.winningBoard = newState.winningBoard || "";
+//     updateGame();
+}
+
 $(document).ready(function () {
 
 	// request the list of groups from the server
 	$.getJSON('/me', function (me) {
+		
+		// setup for channels
+		token = me['token'];
+// 		channel = new goog.appengine.Channel(token);
+// 		var handler = {
+// 			'onopen': onOpened,
+// 			'onmessage': onMessage,
+// 			'onerror': function() {},
+// 			'onclose': function() {}
+// 		};
+// 		socket = channel.open(handler);
+// 		socket.onopen = onOpened;
+// 		socket.onmessage = onMessage;
 		
 		// populate the group list <ul> element
 	 	groupListElem.empty();

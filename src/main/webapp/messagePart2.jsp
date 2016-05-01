@@ -26,27 +26,35 @@ function createMessageView(messages){
     for (var i = 0; i < messages.length; i++) {
       	addMessage(messages[i]);
     } 
+    
+    graphLayout.layout();
+    paperScroller.centerContent();
+    positionContent();
 }
 
 function displayMessageForm(){
 	var form = $("<form>", {id:"message-send-form", class:"create-message"});
     var textbox = $("<textarea>", {id:"message-textbox"});
     var submit = $("<input>", {id:"message-send-button", type:"submit", value: "Send"});
-    form.append( textbox, submit );
-    form.submit(function(e){
-    	e.preventDefault();
-    	  var posting = $.post( '/message', { body: textbox.val(), trii_id: selectedTriiID, parent_id: selectedMessageIDs[0] }, 
-    			  function(message) {
-    				  addMessage(message);
-    				  textbox.val("");
-    	  		  }, "json");
-    });
-    $('#trii-messages').append(form);
-}
+	form.append(textbox, submit);
+		form.submit(function(e) {
+			e.preventDefault();
+			var posting = $.post('/message', {
+				body : textbox.val(), 
+				trii_id : selectedTriiID,
+				parent_id : JSON.stringify(selectedMessageIDs)
+			}, function(message) {
+				addMessage(message);
+				clearMessageSelection();
+			}, "json");
+		});
+		$('#trii-messages').append(form);
+	}
 
-function clearMessageSelection(){
-	selectedMessageIDs = [];
-}
+	function clearMessageSelection() {
+		selectedMessageIDs = [];
+		$('#message-send-form').remove();
+	}
 </script>
 
 </div>
