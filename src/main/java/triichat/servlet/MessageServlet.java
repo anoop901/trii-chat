@@ -82,8 +82,8 @@ public class MessageServlet extends HttpServlet {
 
             // if parent_id parameter is specified,
             Set<Message> parents = new HashSet<Message>();
-            if (parentMessageIDsStr != null) {
-            	parentMessageIDsStr = parentMessageIDsStr.replaceAll("[\"\\[\\]]", "");
+        	parentMessageIDsStr = parentMessageIDsStr.replaceAll("[\"\\[\\]]", "");
+            if (parentMessageIDsStr.length() > 0) {
                 for (String parentMessageIDStr : parentMessageIDsStr.split(",")) {
                     Long parentMessageID = Long.parseLong(parentMessageIDStr);
                     Message parent = OfyService.loadMessage(parentMessageID);

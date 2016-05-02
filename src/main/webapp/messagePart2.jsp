@@ -14,9 +14,8 @@
 function createMessageView(messages){
 	// Create Message Table
 	var button = '<button class="btn" id="btn-layout">layout</button>';
-	var channel = $("<button>", {click: function () { sendMessage('hi'); }, text: "Channel Test"});// '<button onclick="sendMessage(hello);">Channel Test</button>'
     var table = $("<div>", {id:"paper-holder",  class:"paper"});
-    $('#trii-messages').append( button, channel, table);
+    $('#trii-messages').append( button, table);
     
 
     createMessages();
@@ -46,6 +45,7 @@ function displayMessageForm(){
 				parent_id : JSON.stringify(selectedMessageIDs)
 			}, function(message) {
 				addMessage(message);
+				sendMessage(selectedTriiID,null,message['id']);
 				clearMessageSelection();
 			}, "json");
 		});

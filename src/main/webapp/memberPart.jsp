@@ -36,9 +36,11 @@
 			      if (users.length > 0) {
 			          // randomly choose a user
 			          var userID = users[Math.floor(Math.random() * users.length)];
-			          $.get('/add-user-to-group', {user: userID, group: selectedGroupID})
+			          var data = 
+			          $.get('/add-user-to-group', {user: userID.toString(), group: selectedGroupID.toString()})
 			          	  .done(function( user ) {
-							  addMember(user);
+							  addMember(user); 
+							  sendMessage(null,user['id'],null);
 							  $('#addMember').removeClass('visible');
 			        	  }, "json");
 			      } else {

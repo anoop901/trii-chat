@@ -40,7 +40,8 @@
 			  data.push({name: 'group', value: selectedGroupID});
 			  // Send the data using post
 			  var posting = $.post( url, data, function( trii ) {
-				  addTrii(trii);
+				  addTrii(trii); 
+				  sendMessage(trii['id'],null,null);
 				  $('#createTrii').removeClass('visible');
 			  }, "json");
 			});

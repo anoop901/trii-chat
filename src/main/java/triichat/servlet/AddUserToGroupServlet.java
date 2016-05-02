@@ -33,8 +33,10 @@ public class AddUserToGroupServlet extends HttpServlet {
         }
         group.addUser(user);
 
+        response.setContentType("application/json");
         JSONObject userJSON = new JSONObject();
         try {
+        	userJSON.put("id", userID);
             userJSON.put("name", user.getName());
         } catch (JSONException e) {
             e.printStackTrace();

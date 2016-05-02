@@ -68,7 +68,7 @@ var token;
 var channel;
 var socket;
 
-sendMessage = function(message) {
+sendMessage = function(triiID, memberID, messageID) {
 // 	path += '?g=' + state.game_key;
 // 	if (opt_param) {
 // 	  path += '&' + opt_param;
@@ -76,7 +76,8 @@ sendMessage = function(message) {
 // 	var xhr = new XMLHttpRequest();
 // 	xhr.open('POST', path, true);
 // 	xhr.send();
-	$.post( "/me", { group_id: selectedGroupID, message: JSON.stringify("Hello World") } );
+	var data = {group_id: selectedGroupID, trii_id: triiID, member_id: memberID, message_id: messageID}
+	$.post( "/me", { group_id: selectedGroupID, message: JSON.stringify(data) } );
 };
 onOpened = function() {
 	connected = true;
@@ -85,8 +86,36 @@ onOpened = function() {
 };
 	
 onMessage = function(m) {
-     newState = JSON.parse(m.data);
-     alert(newState);
+     var update = JSON.parse(m.data);
+     if(update.member_id){
+    	 if(<%= triiUser.getId() %> == update.member_id){
+    		 groupID = update.group_id;
+    		 $.getJSON('/group', {id: groupID}, (function (groupID, group) {
+ 				addGroup(group);
+             }).bind(undefined, groupID));
+    	 }
+    	 if(selectedGroupID == update.group_id){
+    		 $.getJSON('/user', {id: update.member_id}, function (user) {
+    	     	addMember(user);
+    	     });
+	 	}
+     }
+     if(update.message_id){
+    	 if(selectedTriiID == update.trii_id){
+	    	 // add new message to display
+	    	 $.getJSON('/message', {id: update.message_id}, function (message) {
+	    	 	addMessage(message)
+	    	 });
+    	 }
+     } else if(update.trii_id){
+    	 if(selectedGroupID == update.group_id){
+    		// get this trii's name
+    		var triiID = update.trii_id;
+    	    $.getJSON('/trii', {id: triiID}, (function (triiID, trii) {
+    	    	addTrii(trii);
+    	    }).bind(undefined, triiID));
+    	 }
+   	 }
 //     state.board = newState.board || state.board;
 //     state.userX = newState.userX || state.userX;
 //     state.userO = newState.userO || state.userO;

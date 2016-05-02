@@ -79,6 +79,7 @@ public class MeServlet extends HttpServlet {
         String message = req.getParameter("message");
         Group currentGroup = OfyService.loadGroup(groupID);
         Set<triichat.model.User> users = currentGroup.getUsers();
+        users.remove(user);
         sendUpdateToClients(users, message);
     }
     
