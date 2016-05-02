@@ -21,6 +21,7 @@ import triichat.db.OfyService;
 import triichat.model.Group;
 import triichat.model.Trii;
 import triichat.model.User;
+import triichat.model.Message;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -31,7 +32,8 @@ import java.util.Set;
  * Created by Margret on 4/24/2016.
  * Adapted from Httpunit tutorial @ http://httpunit.sourceforge.net/doc/tutorial/task1editor-initial.html
  */
-public class TriiServletTest extends TestCase{
+public class MessageServletTest extends TestCase{
+
     private final LocalUserServiceTestConfig userConfig = new LocalUserServiceTestConfig();
     private final LocalDatastoreServiceTestConfig dbConfig = new LocalDatastoreServiceTestConfig();
     private final LocalServiceTestHelper helper =
@@ -74,7 +76,7 @@ public class TriiServletTest extends TestCase{
     }
 
     @Test
-    public void testGetTrii() throws Exception{
+    public void testGetMessage() throws Exception {
         UserService userService = UserServiceFactory.getUserService();
         com.google.appengine.api.users.User gUser = userService.getCurrentUser();
         User user = User.createUser(gUser);
@@ -88,21 +90,22 @@ public class TriiServletTest extends TestCase{
         String triiName = "TRII1";
         Trii trii = Trii.createTrii(triiName, group);
 
-        WebRequest req = new GetMethodWebRequest(Constants.LOCALHOST + Constants.TRII_SERVLET_MAPPING);
-        req.setParameter("id", trii.getId().toString());
+        String firstContent = "FIRST";
+        Message first = Message.createMessage(firstContent,new HashSet<Message>(),user, trii );
+        WebRequest req = new GetMethodWebRequest(Constants.LOCALHOST + Constants.MESSAGE_SERVLET_MAPPING);
+        req.setParameter("id", first.getId().toString());
+
         WebResponse resp = client.getResponse(req);
         JSONObject json = new JSONObject(convertStreamToString(resp.getInputStream()));
-        Long retId = json.getLong("id");
-        String retName = json.getString("name");
-        JSONArray retMessages = json.getJSONArray("messages");
 
-        assertTrue(retId.equals(trii.getId()));
-        assertTrue(retName.equals(trii.getName()));
-        assertTrue(retMessages.length() == 0);
+        assertTrue(json.getString("body").equals(firstContent));
+        assertTrue(json.getString("author").equals(first.getAuthor().getId()));
+        assertTrue(json.getString("timestamp").equals(first.getTimeStamp().toString()));
+        assertTrue(json.getJSONArray("parents").length()==0);
     }
 
     @Test
-    public void testMakeTrii() throws Exception{
+    public void testPostMessage() throws Exception{
         UserService userService = UserServiceFactory.getUserService();
         com.google.appengine.api.users.User gUser = userService.getCurrentUser();
         User user = User.createUser(gUser);
@@ -112,30 +115,27 @@ public class TriiServletTest extends TestCase{
         String groupName = "GROUP1";
         Group group = Group.createGroup(groupName,users);
         assertNotNull(group);
+
         String triiName = "TRII1";
-        WebRequest req = new PostMethodWebRequest(Constants.LOCALHOST + Constants.TRII_SERVLET_MAPPING);
-        req.setParameter("name", triiName );
-        req.setParameter("group", group.getId().toString());
+        Trii trii = Trii.createTrii(triiName, group);
+
+        String firstContent = "FIRST";
+        WebRequest req = new PostMethodWebRequest(Constants.LOCALHOST + Constants.MESSAGE_SERVLET_MAPPING);
+        req.setParameter("trii_id", trii.getId().toString());
+        req.setParameter("body", firstContent);
         WebResponse response = servletRunner.getResponse(req);
-        String str = convertStreamToString(response.getInputStream());
-        assertNotNull(str);
-        assertFalse(str.isEmpty());
-        JSONObject json = new JSONObject(str);
+        JSONObject json = new JSONObject(convertStreamToString(response.getInputStream()));
 
-        assertTrue(json.getString("name").equals(triiName));
-        Long id = json.getLong("id");
-        Trii trii = OfyService.loadTrii(id);
-        assertNotNull(trii);
-        assertTrue(trii.getName().equals(triiName));
+        assertTrue(json.getString("author").equals(user.getId().toString()));
+        assertTrue(json.getString("body").equals(firstContent));
     }
-
 
     /**
      * http://stackoverflow.com/a/5445161
      * @param is - InputStream
      * @return the String
      */
-    static String convertStreamToString(InputStream is) {
+    private static String convertStreamToString(InputStream is) {
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }
