@@ -21,6 +21,9 @@ html, body {
 .link {
     pointer-events: none;
 }
+.Member {
+	cursor: pointer;
+}
 .tree-layout-preview {
     stroke: #212135;
     stroke-width: 5;

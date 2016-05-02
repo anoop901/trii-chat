@@ -50,7 +50,7 @@
     </div>    
 </div>
 
-<%@ include file="messagePart.jsp" %>
+<%@ include file="messagePart2.jsp" %>
     
 <script>
 
@@ -114,10 +114,13 @@ function clickedTrii(triiID) {
 	        triiListElem.empty();
 	        triiErrorElem.text('[failed to get trii]');
 	    });
+
+		clearMessageSelection();
 	}
 }
 
 function clearTriiSelection(){
+	clearMessageSelection();
 	selectedTriiID = undefined;
     $('#trii-name').text('---');
     triiMessagesElem.empty();

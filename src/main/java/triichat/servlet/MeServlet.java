@@ -1,17 +1,22 @@
 package triichat.servlet;
 
+import com.google.appengine.api.channel.ChannelService;
+import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import triichat.model.Group;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Set;
 
@@ -34,7 +39,12 @@ public class MeServlet extends HttpServlet {
         if(user == null){
             return; // ignore request
         }
+        
 
+        String userId = gUser.getUserId();
+        ChannelService channelService = ChannelServiceFactory.getChannelService();
+        String token = channelService.createChannel(userId);
+        
         // Get their groups and put group ids in the groups json array
         Set<Group> triiGroups = user.getGroups();
 
@@ -44,6 +54,7 @@ public class MeServlet extends HttpServlet {
 
         try {
             me.put("id", user.getId());
+            me.put("token", token);
             me.put("groups", groups);
         } catch (JSONException e) {
             e.printStackTrace();
