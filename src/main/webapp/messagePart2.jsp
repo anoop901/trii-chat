@@ -14,8 +14,9 @@
 function createMessageView(messages){
 	// Create Message Table
 	var button = '<button class="btn" id="btn-layout">layout</button>';
+	var channel = $("<button>", {click: function () { sendMessage('hi'); }, text: "Channel Test"});// '<button onclick="sendMessage(hello);">Channel Test</button>'
     var table = $("<div>", {id:"paper-holder",  class:"paper"});
-    $('#trii-messages').append( button, table);
+    $('#trii-messages').append( button, channel, table);
     
 
     createMessages();

@@ -282,6 +282,7 @@ function addMessage(message) {
         graph.addCell(link(parent,newMember));
     }
     graphLayout.prepare().layout();
+    paperScroller.centerContent();
     positionContent();
     
 }

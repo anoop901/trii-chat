@@ -19,7 +19,7 @@
 	 <link rel="stylesheet" href="stylesheets/layout.css">
 	 <link rel="stylesheet" href="stylesheets/rappid.min.css" />
      <link rel="stylesheet" type="text/css" href="stylesheets/message.css" />
-<!--      <script src='/_ah/channel/jsapi'></script> -->
+     <script src='/_ah/channel/jsapi'></script>
 </head>
 <body>
 
@@ -68,7 +68,7 @@ var token;
 var channel;
 var socket;
 
-sendMessage = function(path, opt_param) {
+sendMessage = function(message) {
 // 	path += '?g=' + state.game_key;
 // 	if (opt_param) {
 // 	  path += '&' + opt_param;
@@ -76,12 +76,8 @@ sendMessage = function(path, opt_param) {
 // 	var xhr = new XMLHttpRequest();
 // 	xhr.open('POST', path, true);
 // 	xhr.send();
+	$.post( "/me", { group_id: selectedGroupID, message: JSON.stringify("Hello World") } );
 };
-moveInSquare = function(id) {
-// 	if (isMyMove() && state.board[id] == ' ') {
-// 		sendMessage('/move', 'i=' + id);
-// 	}
-}
 onOpened = function() {
 	connected = true;
 	sendMessage('opened');
@@ -89,7 +85,8 @@ onOpened = function() {
 };
 	
 onMessage = function(m) {
-//     newState = JSON.parse(m.data);
+     newState = JSON.parse(m.data);
+     alert(newState);
 //     state.board = newState.board || state.board;
 //     state.userX = newState.userX || state.userX;
 //     state.userO = newState.userO || state.userO;
@@ -106,16 +103,16 @@ $(document).ready(function () {
 		
 		// setup for channels
 		token = me['token'];
-// 		channel = new goog.appengine.Channel(token);
-// 		var handler = {
-// 			'onopen': onOpened,
-// 			'onmessage': onMessage,
-// 			'onerror': function() {},
-// 			'onclose': function() {}
-// 		};
-// 		socket = channel.open(handler);
-// 		socket.onopen = onOpened;
-// 		socket.onmessage = onMessage;
+		channel = new goog.appengine.Channel(token);
+		var handler = {
+			'onopen': function() {},
+			'onmessage': onMessage,
+			'onerror': function() {},
+			'onclose': function() {}
+		};
+		socket = channel.open(handler);
+		//socket.onopen = onOpened;
+		socket.onmessage = onMessage;
 		
 		// populate the group list <ul> element
 	 	groupListElem.empty();
