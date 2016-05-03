@@ -140,7 +140,7 @@ function createMessages() {
     });
     
     paper.on('blank:pointerdown', paperScroller.startPanning);
-    paperScroller.$el.css({ width: '100%', height: '66%' }).appendTo('#paper-holder');
+    paperScroller.$el.css({ width: '100%', height: '72%' }).appendTo('#paper-holder');
 
     graph.resetCells();
     

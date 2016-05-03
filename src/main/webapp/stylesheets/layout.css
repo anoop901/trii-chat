@@ -22,10 +22,10 @@ button {
     color: #75b1e8; }
 
 main {
-  margin: 0 auto;
+  margin: 4% auto;
   width: 90%;
   min-width: 850px;
-  height: 100%;
+  height: 87%;
   background: #94C2ED;
   border-radius: 5px; }
 
@@ -34,7 +34,7 @@ main {
   padding: 10px; }
   .title h1 {
     margin: 0px;
-    padding: 0px; }
+    padding: 1.5%; }
   .title .name {
     float: right; }
   .title a {
@@ -48,13 +48,14 @@ main {
   border-radius: 5px; }
 
 .group-selection {
-  width: 22%;
+  width: 25%;
   float: left;
   padding: 20px;
   height: 100%;
   background: gray;
   border-bottom-left-radius: 5px;
-  text-align: center; }
+  text-align: center;
+  min-width: 200px; }
   .group-selection h2 {
     font-weight: bold;
     font-size: 26px;
@@ -101,7 +102,7 @@ main {
   font-size: 26px; }
 
 .trii-view {
-  width: 53%;
+  width: 50%;
   height: 100%;
   float: left;
   background: #F2F5F8;
@@ -113,13 +114,12 @@ main {
     height: 15%; }
     .trii-view .trii-header h2 {
       font-weight: bold;
-      font-size: 16px;
+      font-size: 40px;
       padding-left: 10px;
-      margin-top: 6px; }
+      margin-top: 10px; }
   .trii-view .trii-messages {
-    padding: 30px 30px 20px;
+    padding: 30px 10px 20px;
     border-bottom: 2px solid white;
-    overflow-y: scroll;
     height: 85%; }
     .trii-view .trii-messages .message-data {
       margin-bottom: 15px; }

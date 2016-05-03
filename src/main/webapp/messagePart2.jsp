@@ -13,9 +13,9 @@
 <script>
 function createMessageView(messages){
 	// Create Message Table
-	var button = '<button class="btn" id="btn-layout">layout</button>';
+	//var button = '<button class="btn" id="btn-layout">layout</button>';
     var table = $("<div>", {id:"paper-holder",  class:"paper"});
-    $('#trii-messages').append( button, table);
+    $('#trii-messages').append( table);
     
 
     createMessages();
